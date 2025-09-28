@@ -1,7 +1,4 @@
-{% extends 'base/base.html' %}
-{% load static %}
-{% block content %}
-{% include 'base/header.html' %}
+{% extends 'base/base.html' %} {% load static %} {% block content %}
 
 <section class="ftco-section contact-section bg-light">
   <div class="container">
@@ -14,8 +11,8 @@
         >
           {% csrf_token %} {% block user_form %}
 
-          <div class="form-group">{{ form.username }}</div>
-          <div class="form-group">{{ form.password }}</div>
+          <div class="form-group">username:{{ form.username }}</div>
+          <div class="form-group">password:{{ form.password }}</div>
           <div class="form-group">
             Don't have any account? Create one
             <a href="{% url 'signup' %}">here</a>.
@@ -30,7 +27,14 @@
         </form>
       </div>
       <div class="col-md-6 d-flex">
-        <div id="map" class="bg-white"></div>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.823631394269!2d34.5993583147542!3d-0.004433999999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182aa5e53511d6b3%3A0x1b9f4b803a45b70d!2sMaseno%20University!5e0!3m2!1sen!2ske!4v1633020831939!5m2!1sen!2ske"
+          width="600"
+          height="550"
+          style="border: 0"
+          allowfullscreen=""
+          loading="lazy"
+        ></iframe>
       </div>
     </div>
   </div>

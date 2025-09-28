@@ -1,9 +1,4 @@
-{% extends 'base/base.html' %}
-{% load static %}
-{% block content %}
-{% include 'includes/hero.html' with title='My Wishlist' breadcrumbs='<span class="mr-2"><a href="'|add:request.scheme|add:'://'|add:request.get_host|add:'/home/'|add:''">Home</a></span>
-<span>Wishlist</span>' %}
-
+{% extends 'base/base.html' %} {% load static %} {% block content %}
 <section class="ftco-section ftco-cart">
   <div class="container">
     <div class="row">
@@ -13,259 +8,81 @@
             <thead class="thead-primary">
               <tr class="text-center">
                 <th>&nbsp;</th>
-                <th>Product List</th>
-                <th>&nbsp;</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <th>Product Image</th>
+                <th>Product Details</th>
+                <th>Price/Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr class="text-center">
+              {% for item in wishlist_items %}
+              <tr
+                class="text-center wishlist-row"
+                data-product-id="{{ item.product.id }}"
+              >
                 <td class="product-remove">
-                  <a href="#"><span class="ion-ios-close"></span></a>
+                  <a
+                    href="{% url 'remove_from_wishlist' item.id %}"
+                    class="btn-remove"
+                    aria-label="Remove {{ item.product.name }} from wishlist"
+                  >
+                    <span class="ion-ios-close"></span>
+                  </a>
                 </td>
-
                 <td class="image-prod">
                   <div
                     class="img"
-                    style="
-                      background-image: url({% static 'images/product-1.jpg' %});
-                    "
+                    style="background-image: url({{ item.product.photo.url }});"
+                    aria-label="{{ item.product.name }} Image"
                   ></div>
                 </td>
-
-                <td class="product-name">
-                  <h3>Bell Pepper</h3>
-                  <p>
-                    Far far away, behind the word mountains, far from the
-                    countries
+                <td class="product-name text-left">
+                  <h3>
+                    <a href="{% url 'product-details' item.product.id %}"
+                      >{{ item.product.name|default:'[Product Name]' }}</a
+                    >
+                  </h3>
+                  <p class="text-muted small">
+                    {{ item.product.details|default:'No description available.'
+                    }}
                   </p>
                 </td>
-
-                <td class="price">$4.90</td>
-
-                <td class="quantity">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="quantity"
-                      class="quantity form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                    />
-                  </div>
+                <td class="price-status">
+                  <span class="price d-block"
+                    >${{ item.product.price|default:'0.00' }}</span
+                  >
+                  {% if item.product.stock > 0 %}
+                  <span class="badge badge-success">In Stock</span>
+                  {% else %}
+                  <span class="badge badge-danger">Out of Stock</span>
+                  {% endif %}
                 </td>
-
-                <td class="total">$4.90</td>
+                <td class="product-action">
+                  {% if item.product.stock > 0 %}
+                  <a
+                    href="{% url 'add_to_cart' item.product.id %}"
+                    class="btn btn-primary py-2 px-4"
+                    aria-label="Add {{ item.product.name }} to cart"
+                    >Add to Cart</a
+                  >
+                  {% else %}
+                  <button class="btn btn-secondary py-2 px-4" disabled>
+                    Out of Stock
+                  </button>
+                  {% endif %}
+                </td>
               </tr>
-              <!-- END TR-->
-
-              <tr class="text-center">
-                <td class="product-remove">
-                  <a href="#"><span class="ion-ios-close"></span></a>
-                </td>
-
-                <td class="image-prod">
-                  <div
-                    class="img"
-                    style="
-                      background-image: url({% static 'images/product-2.jpg' %});
-                    "
-                  ></div>
-                </td>
-
-                <td class="product-name">
-                  <h3>Bell Pepper</h3>
+              {% empty %}
+              <tr>
+                <td colspan="5" class="text-center py-5">
+                  <h4 class="mb-3">Your Wishlist is Empty!</h4>
                   <p>
-                    Far far away, behind the word mountains, far from the
-                    countries
+                    Start saving items you love by browsing our
+                    <a href="{% url 'shop' %}" class="text-primary">Shop</a>.
                   </p>
                 </td>
-
-                <td class="price">$15.70</td>
-
-                <td class="quantity">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="quantity"
-                      class="quantity form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                    />
-                  </div>
-                </td>
-
-                <td class="total">$15.70</td>
               </tr>
-              <!-- END TR-->
-
-              <tr class="text-center">
-                <td class="product-remove">
-                  <a href="#"><span class="ion-ios-close"></span></a>
-                </td>
-
-                <td class="image-prod">
-                  <div
-                    class="img"
-                    style="
-                      background-image: url({% static 'images/product-3.jpg' %});
-                    "
-                  ></div>
-                </td>
-
-                <td class="product-name">
-                  <h3>Bell Pepper</h3>
-                  <p>
-                    Far far away, behind the word mountains, far from the
-                    countries
-                  </p>
-                </td>
-
-                <td class="price">$15.70</td>
-
-                <td class="quantity">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="quantity"
-                      class="quantity form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                    />
-                  </div>
-                </td>
-
-                <td class="total">$15.70</td>
-              </tr>
-              <!-- END TR-->
-
-              <tr class="text-center">
-                <td class="product-remove">
-                  <a href="#"><span class="ion-ios-close"></span></a>
-                </td>
-
-                <td class="image-prod">
-                  <div
-                    class="img"
-                    style="
-                      background-image: url({% static 'images/product-4.jpg' %});
-                    "
-                  ></div>
-                </td>
-
-                <td class="product-name">
-                  <h3>Bell Pepper</h3>
-                  <p>
-                    Far far away, behind the word mountains, far from the
-                    countries
-                  </p>
-                </td>
-
-                <td class="price">$15.70</td>
-
-                <td class="quantity">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="quantity"
-                      class="quantity form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                    />
-                  </div>
-                </td>
-
-                <td class="total">$15.70</td>
-              </tr>
-              <!-- END TR-->
-
-              <tr class="text-center">
-                <td class="product-remove">
-                  <a href="#"><span class="ion-ios-close"></span></a>
-                </td>
-
-                <td class="image-prod">
-                  <div
-                    class="img"
-                    style="
-                      background-image: url({% static 'images/product-5.jpg' %});
-                    "
-                  ></div>
-                </td>
-
-                <td class="product-name">
-                  <h3>Bell Pepper</h3>
-                  <p>
-                    Far far away, behind the word mountains, far from the
-                    countries
-                  </p>
-                </td>
-
-                <td class="price">$15.70</td>
-
-                <td class="quantity">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="quantity"
-                      class="quantity form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                    />
-                  </div>
-                </td>
-
-                <td class="total">$15.70</td>
-              </tr>
-              <!-- END TR-->
-
-              <tr class="text-center">
-                <td class="product-remove">
-                  <a href="#"><span class="ion-ios-close"></span></a>
-                </td>
-
-                <td class="image-prod">
-                  <div
-                    class="img"
-                    style="
-                      background-image: url({% static 'images/product-6.jpg' %});
-                    "
-                  ></div>
-                </td>
-
-                <td class="product-name">
-                  <h3>Bell Pepper</h3>
-                  <p>
-                    Far far away, behind the word mountains, far from the
-                    countries
-                  </p>
-                </td>
-
-                <td class="price">$15.70</td>
-
-                <td class="quantity">
-                  <div class="input-group mb-3">
-                    <input
-                      type="text"
-                      name="quantity"
-                      class="quantity form-control input-number"
-                      value="1"
-                      min="1"
-                      max="100"
-                    />
-                  </div>
-                </td>
-
-                <td class="total">$15.70</td>
-              </tr>
-              <!-- END TR-->
+              {% endfor %}
             </tbody>
           </table>
         </div>

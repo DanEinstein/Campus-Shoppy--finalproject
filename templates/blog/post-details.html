@@ -1,9 +1,7 @@
-{% extends 'base/base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'base/base.html' %} {% load static %} {% block content %}
 <div
   class="hero-wrap hero-bread"
-  style="background-image: url({% static 'images/bg_1.jpg' %})"
+  style="background-image: url({% static "images/blogsimage.jpg" %})"
 >
   <div class="container">
     <div
@@ -53,7 +51,10 @@
           <ul class="comment-list">
             <li class="comment">
               <div class="vcard bio">
-                <img src="{% static 'images/person_1.jpg' %}" alt="Image placeholder" />
+                <img
+                  src="{% static 'images/person1.jpg' %}"
+                  alt="Image placeholder"
+                />
               </div>
               <div class="comment-body">
                 <h3>John Doe</h3>
@@ -70,7 +71,10 @@
 
             <li class="comment">
               <div class="vcard bio">
-                <img src="{% static 'images/person_1.jpg' %}" alt="Image placeholder" />
+                <img
+                  src="{% static 'images/person_1.jpg' %}"
+                  alt="Image placeholder"
+                />
               </div>
               <div class="comment-body">
                 <h3>John Doe</h3>
@@ -87,7 +91,10 @@
               <ul class="children">
                 <li class="comment">
                   <div class="vcard bio">
-                    <img src="{% static 'images/person_1.jpg' %}" alt="Image placeholder" />
+                    <img
+                      src="{% static 'images/person_1.jpg' %}"
+                      alt="Image placeholder"
+                    />
                   </div>
                   <div class="comment-body">
                     <h3>John Doe</h3>
@@ -152,7 +159,10 @@
 
             <li class="comment">
               <div class="vcard bio">
-                <img src="{% static 'images/person_1.jpg' %}" alt="Image placeholder" />
+                <img
+                  src="{% static 'images/person_1.jpg' %}"
+                  alt="Image placeholder"
+                />
               </div>
               <div class="comment-body">
                 <h3>John Doe</h3>

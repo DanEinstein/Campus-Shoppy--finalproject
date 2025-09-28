@@ -1,30 +1,20 @@
-{% extends 'base/base.html' %}
-{% load static %} {% block content %} {% include
+{% extends 'base/base.html' %} {% load static %} {% block content %} {% include
 'includes/hero.html' with title='Product Single' breadcrumbs='
-<span class="mr-2"
-  ><a
-    href="'|add:request.scheme|add:'://'|add:request.get_host|add:'/home/'|add:'"
-    >Home</a
-  ></span
->
-<span class="mr-2"
-  ><a
-    href="'|add:request.scheme|add:'://'|add:request.get_host|add:'/shop/'|add:'"
-    >Product</a
-  ></span
->
+<span class="mr-2"><a href="{% url 'home' %}">Home</a></span>
+<span class="mr-2"><a href="{% url 'shop' %}">Product</a></span>
 <span>Product Single</span>' %}
 
 <section class="ftco-section">
   <div class="container">
     <div class="row">
       <div class="col-lg-6 mb-5 ftco-animate">
-        <a href="{{ product.photo.url }}" class="image-popup"
-          ><img
+        <a href="{{ product.photo.url }}" class="image-popup">
+          <img
             src="{{ product.photo.url }}"
             class="img-fluid"
-            alt="Colorlib Template"
-        /></a>
+            alt="{{ product.name }}"
+          />
+        </a>
       </div>
       <div class="col-lg-6 product-details pl-md-5 ftco-animate">
         <h3>{{ product.name }}</h3>
@@ -50,62 +40,71 @@
         </div>
         <p class="price"><span>${{ product.price }}</span></p>
         <p>{{ product.details }}</p>
-        <div class="row mt-4">
-          <div class="col-md-6">
-            <div class="form-group d-flex">
-              <div class="select-wrap">
-                <div class="icon"><span class="ion-ios-arrow-down"></span></div>
-                <select name="" id="" class="form-control">
-                  <option value="">Small</option>
-                  <option value="">Medium</option>
-                  <option value="">Large</option>
-                  <option value="">Extra Large</option>
-                </select>
+        <form
+          action="{% url 'add_to_cart' product.id %}"
+          method="post"
+          id="add-to-cart-form"
+        >
+          {% csrf_token %}
+          <div class="row mt-4">
+            <div class="col-md-6">
+              <div class="form-group d-flex">
+                <div class="select-wrap">
+                  <div class="icon">
+                    <span class="ion-ios-arrow-down"></span>
+                  </div>
+                  <select name="size" id="size" class="form-control">
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                    <option value="Extra Large">Extra Large</option>
+                  </select>
+                </div>
               </div>
             </div>
+            <div class="w-100"></div>
+            <div class="input-group col-md-6 d-flex mb-3">
+              <span class="input-group-btn mr-2">
+                <button
+                  type="button"
+                  class="quantity-left-minus btn"
+                  data-type="minus"
+                  data-field=""
+                >
+                  <i class="ion-ios-remove"></i>
+                </button>
+              </span>
+              <input
+                type="text"
+                id="quantity"
+                name="quantity"
+                class="form-control input-number"
+                value="1"
+                min="1"
+                max="100"
+              />
+              <span class="input-group-btn ml-2">
+                <button
+                  type="button"
+                  class="quantity-right-plus btn"
+                  data-type="plus"
+                  data-field=""
+                >
+                  <i class="ion-ios-add"></i>
+                </button>
+              </span>
+            </div>
+            <div class="w-100"></div>
+            <div class="col-md-12">
+              <p style="color: #000">{{ product.stock }} kg available</p>
+            </div>
           </div>
-          <div class="w-100"></div>
-          <div class="input-group col-md-6 d-flex mb-3">
-            <span class="input-group-btn mr-2">
-              <button
-                type="button"
-                class="quantity-left-minus btn"
-                data-type="minus"
-                data-field=""
-              >
-                <i class="ion-ios-remove"></i>
-              </button>
-            </span>
-            <input
-              type="text"
-              id="quantity"
-              name="quantity"
-              class="form-control input-number"
-              value="1"
-              min="1"
-              max="100"
-            />
-            <span class="input-group-btn ml-2">
-              <button
-                type="button"
-                class="quantity-right-plus btn"
-                data-type="plus"
-                data-field=""
-              >
-                <i class="ion-ios-add"></i>
-              </button>
-            </span>
-          </div>
-          <div class="w-100"></div>
-          <div class="col-md-12">
-            <p style="color: #000">600 kg available</p>
-          </div>
-        </div>
-        <p>
-          <a href="{% url 'cart' %}" class="btn btn-black py-3 px-5"
-            >Add to Cart</a
-          >
-        </p>
+          <p>
+            <button type="submit" class="btn btn-black py-3 px-5">
+              Add to Cart
+            </button>
+          </p>
+        </form>
       </div>
     </div>
   </div>
@@ -117,10 +116,7 @@
       <div class="col-md-12 heading-section text-center ftco-animate">
         <span class="subheading">Products</span>
         <h2 class="mb-4">Related Products</h2>
-        <p>
-          Far far away, behind the word mountains, far from the countries
-          Vokalia and Consonantia
-        </p>
+        <p>Here you get to view all the Related products</p>
       </div>
     </div>
   </div>
@@ -129,22 +125,26 @@
       {% for rel_product in related_products %}
       <div class="col-md-6 col-lg-3 ftco-animate">
         <div class="product">
-          <a href="#" class="img-prod"
-            ><img
+          <a href="{% url 'product-details' rel_product.id %}" class="img-prod">
+            <img
               class="img-fluid"
               src="{{ rel_product.photo.url }}"
-              alt="Colorlib Template"
+              alt="{{ rel_product.name }}"
             />
             <span class="status">30%</span>
             <div class="overlay"></div>
           </a>
           <div class="text py-3 pb-4 px-3 text-center">
-            <h3><a href="#">{{ rel_product.name }}</a></h3>
+            <h3>
+              <a href="{% url 'product-details' rel_product.id %}"
+                >{{ rel_product.name }}</a
+              >
+            </h3>
             <div class="d-flex">
               <div class="pricing">
                 <p class="price">
-                  <span class="mr-2 price-dc">${{ rel_product.price }}</span
-                  ><span class="price-sale">${{ rel_product.price }}</span>
+                  <span class="mr-2 price-dc">${{ rel_product.price }}</span>
+                  <span class="price-sale">${{ rel_product.price }}</span>
                 </p>
               </div>
             </div>
@@ -157,13 +157,13 @@
                   <span><i class="ion-ios-menu"></i></span>
                 </a>
                 <a
-                  href="#"
+                  href="{% url 'add_to_cart' rel_product.id %}"
                   class="buy-now d-flex justify-content-center align-items-center mx-1"
                 >
                   <span><i class="ion-ios-cart"></i></span>
                 </a>
                 <a
-                  href="#"
+                  href="{% url 'add_to_wishlist' rel_product.id %}"
                   class="heart d-flex justify-content-center align-items-center"
                 >
                   <span><i class="ion-ios-heart"></i></span>
@@ -178,32 +178,86 @@
   </div>
 </section>
 
+<section class="ftco-section testimony-section">
+  <div class="container">
+    <div class="row justify-content-center mb-5 pb-3">
+      <div class="col-md-7 heading-section ftco-animate text-center">
+        <span class="subheading">Testimony</span>
+        <h2 class="mb-4">Our satisfied customer says</h2>
+        <p>
+          Far far away, behind the word mountains, far from the countries
+          Vokalia and Consonantia, there live the blind texts. Separated they
+          live in
+        </p>
+      </div>
+    </div>
+    <div class="row ftco-animate">
+      <div class="col-md-12">
+        <div class="carousel-testimony owl-carousel">
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div
+                class="user-img mb-5"
+                style="background-image: url({%static'images/person_1.jpg'%})"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">Marketing Manager</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div
+                class="user-img mb-5"
+                style="background-image: url({%static'images/person_2.jpg'%})"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  Far far away, behind the word mountains, far from the
+                  countries Vokalia and Consonantia, there live the blind texts.
+                </p>
+                <p class="name">Garreth Smith</p>
+                <span class="position">Interface Designer</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 {% include 'includes/newsletter.html' %}
+
 <script>
   $(document).ready(function () {
     var quantitiy = 0;
     $(".quantity-right-plus").click(function (e) {
-      // Stop acting like a button
       e.preventDefault();
-      // Get the field name
       var quantity = parseInt($("#quantity").val());
-
-      // If is not undefined
-
       $("#quantity").val(quantity + 1);
-
-      // Increment
     });
 
     $(".quantity-left-minus").click(function (e) {
-      // Stop acting like a button
       e.preventDefault();
-      // Get the field name
       var quantity = parseInt($("#quantity").val());
-
-      // If is not undefined
-
-      // Increment
       if (quantity > 0) {
         $("#quantity").val(quantity - 1);
       }
