@@ -60,7 +60,7 @@
                 <td class="product-action">
                   {% if item.product.stock > 0 %}
                   <a
-                    href="{% url 'add_to_cart' item.product.id %}"
+                    href="{% url 'cart:add_to_cart' item.product.id %}"
                     class="btn btn-primary py-2 px-4"
                     aria-label="Add {{ item.product.name }} to cart"
                     >Add to Cart</a

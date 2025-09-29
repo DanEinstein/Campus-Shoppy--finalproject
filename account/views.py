@@ -23,19 +23,16 @@ def signup(request):
 
 def signin(request):
     if request.user.is_authenticated:
-        return render(request, 'homepage.html')
+        return redirect('home')
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
             login(request, user)
             return redirect('home')
-        else:
-            form = AuthenticationForm(request.POST)
-            return render(request, 'account/signin.html', {'form': form})
+        return render(request, 'account/signin.html', {'form': form})
     else:
-        form = AuthenticationForm()
+        form = AuthenticationForm(request)
         return render(request, 'account/signin.html', {'form': form})
 
 

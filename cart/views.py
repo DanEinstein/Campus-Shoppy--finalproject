@@ -1,76 +1,164 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
+from django.db import transaction
+from django.contrib import messages
+from shop.models import Product
+from .cart import Cart
+from .forms import CartAddProductForm, OrderCreateForm
+from .models import OrderItem
 from django.contrib.auth.decorators import login_required
-from .models import Cart, CartItem, OrderItem
-from .forms import CheckoutForm
+from django.urls import reverse
 
 
-@login_required
-def cart(request):
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    cart_items = cart.cartitem_set.all().select_related('product')
-    for item in cart_items:
-        item.total_price = item.product.price * item.quantity
-
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
-    context = {
-        'cart_items': cart_items,
-        'total_price': total_price
-    }
-    return render(request, 'cart/cart.html', context)
-
-
-@login_required
-def update_cart(request):
+def add_to_cart(request, product_id):
+    """
+    A view to add a product to the cart or update its quantity.
+    """
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    # Handle POST with form; otherwise allow GET to add a single item
     if request.method == 'POST':
-        cart, _ = Cart.objects.get_or_create(user=request.user)
-        cart_items = cart.cartitem_set.all()
-        for item in cart_items:
-            quantity_key = f'quantity_{item.id}'
-            if quantity_key in request.POST:
-                quantity = int(request.POST[quantity_key])
-                if quantity > 0:
-                    item.quantity = quantity
-                    item.save()
-    return redirect('cart')
+        form = CartAddProductForm(request.POST)
+        quantity = 1
+        update_flag = False
+        if form.is_valid():
+            cd = form.cleaned_data
+            quantity = max(1, cd['quantity'])
+            update_flag = cd['update']
+        else:
+            # Fallback for templates posting a plain quantity value
+            try:
+                quantity = max(1, int(request.POST.get('quantity', '1')))
+            except (TypeError, ValueError):
+                quantity = 1
+            update_flag = request.POST.get('update', 'False') in ('True', 'true', '1')
+    else:
+        # GET request: add one unit, no update
+        quantity = 1
+        update_flag = False
+        # enforce inventory limit
+        if product.inventory <= 0:
+            messages.error(request, 'This product is out of stock.')
+            return redirect('cart:cart_detail')
+        if not update_flag:
+            # adding to existing quantity
+            current_qty = 0
+            product_id_str = str(product.id)
+            if product_id_str in cart.cart:
+                current_qty = cart.cart[product_id_str]['quantity']
+            if current_qty + quantity > product.inventory:
+                messages.error(request, 'Requested quantity exceeds available stock.')
+                return redirect('cart:cart_detail')
+        else:
+            # direct set
+            if quantity > product.inventory:
+                messages.error(request, 'Requested quantity exceeds available stock.')
+                return redirect('cart:cart_detail')
+        cart.add(product=product,
+                 quantity=quantity,
+                 update_quantity=update_flag)
+    return redirect('cart:cart_detail')
 
 
-@login_required
-def remove_from_cart(request, item_id):
-    cart_item = get_object_or_404(CartItem, id=item_id, cart__user=request.user)
-    cart_item.delete()
-    return redirect('cart')
+def remove_from_cart(request, product_id):
+    """
+    A view to remove a product from the cart.
+    """
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.remove(product)
+    return redirect('cart:cart_detail')
+
+
+def cart_detail(request):
+    """
+    A view to display the cart and its items.
+    """
+    cart = Cart(request)
+    return render(request, 'cart/cart.html', {'cart': cart})
 
 
 @login_required
 def checkout(request):
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    cart_items = cart.cartitem_set.all()
-    total_price = sum(item.product.price * item.quantity for item in cart_items)
-
+    cart = Cart(request)
     if request.method == 'POST':
-        form = CheckoutForm(request.POST)
+        form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save(commit=False)
-            order.user = request.user
-            order.save()
+            # transactional ensure inventory and totals
+            with transaction.atomic():
+                # refresh products and validate inventory
+                product_ids = list(cart.cart.keys())
+                products = Product.objects.select_for_update().filter(id__in=product_ids)
+                product_map = {str(p.id): p for p in products}
+                order_total = 0
+                # validate each cart line
+                for item in cart:
+                    pid = str(item['product'].id)
+                    product = product_map.get(pid)
+                    if product is None:
+                        messages.error(request, 'One of the products in your cart no longer exists.')
+                        return redirect('cart:cart_detail')
+                    if item['quantity'] > product.inventory:
+                        messages.error(request, f'Not enough stock for {product.name}.')
+                        return redirect('cart:cart_detail')
+                    line_total = item['price'] * item['quantity']
+                    order_total += line_total
 
-            for item in cart_items:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item.product,
-                    quantity=item.quantity,
-                    price=item.product.price
-                )
+                order = form.save(commit=False)
+                order.user = request.user
+                order.total_amount = order_total
+                order.save()
 
-            cart_items.delete()
-
-            return redirect('order_success')
+                for item in cart:
+                    product = product_map[str(item['product'].id)]
+                    OrderItem.objects.create(
+                        order=order,
+                        product=product,
+                        price=item['price'],
+                        quantity=item['quantity']
+                    )
+                # Defer inventory decrement to payment success callback
+                # keep cart until payment initiated, then clear
+            return redirect(reverse('payments:initiate', args=[order.id]))
     else:
-        form = CheckoutForm()
+        form = OrderCreateForm()
+    return render(request, 'cart/checkout.html', {'cart': cart, 'form': form})
 
-    context = {
-        'form': form,
-        'cart_items': cart_items,
-        'total_price': total_price
-    }
-    return render(request, 'cart/checkout.html', context)
+
+def update_cart(request):
+    """
+    A view to update product quantities in the cart.
+    """
+    cart = Cart(request)
+    if request.method == 'POST' and cart:
+        product_ids = cart.cart.keys()
+        products = Product.objects.filter(id__in=product_ids)
+        product_map = {str(p.id): p for p in products}
+
+        for product_id in product_ids:
+            quantity_key = f'quantity_{product_id}'
+            if quantity_key in request.POST and product_id in product_map:
+                try:
+                    quantity = int(request.POST[quantity_key])
+                except (TypeError, ValueError):
+                    continue
+                quantity = max(0, quantity)
+                product = product_map[product_id]
+                if quantity == 0:
+                    cart.remove(product)
+                else:
+                    if quantity > product.inventory:
+                        messages.error(request, f'Requested quantity for {product.name} exceeds available stock.')
+                        quantity = product.inventory
+                    cart.add(product, quantity, update_quantity=True)
+    return redirect('cart:cart_detail')
+
+
+def order_success(request):
+    """
+    A view to show a success message after placing an order.
+    """
+    return render(request, 'cart/order_success.html')
+
+
+### 2. Create Cart Logic

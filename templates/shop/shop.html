@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %} {% load static %} {% block content %}
 <div
   class="hero-wrap hero-bread"
-  style="background-image: url({% static 'images/Homepage3.jpg' %})""
+  style="background-image: url({% static 'images/Homepage3.jpg' %})"
 >
   <div class="container">
     <div
@@ -38,7 +38,7 @@
             ><img
               class="img-fluid"
               src="{{ product.photo.url }}"
-              alt="Colorlib Template"
+              alt="{{ product.name }}"
             />
             <div class="overlay"></div>
           </a>
@@ -50,7 +50,7 @@
             </h3>
             <div class="d-flex">
               <div class="pricing">
-                <p class="price"><span>${{ product.price }}.00</span></p>
+                <p class="price"><span>Ksh {{ product.price }}</span></p>
               </div>
             </div>
             <div class="bottom-area d-flex px-3">
@@ -61,14 +61,19 @@
                 >
                   <span><i class="ion-ios-menu"></i></span>
                 </a>
+                <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="quantity" value="1">
+                    <input type="hidden" name="update" value="False">
+                    <button
+                      type="submit"
+                      class="buy-now d-flex justify-content-center align-items-center mx-1"
+                    >
+                      <span><i class="ion-ios-cart"></i></span>
+                    </button>
+                </form>
                 <a
-                  href="{% url 'cart' %}"
-                  class="buy-now d-flex justify-content-center align-items-center mx-1"
-                >
-                  <span><i class="ion-ios-cart"></i></span>
-                </a>
-                <a
-                  href="#"
+                  href="{% url 'add_to_wishlist' product.id %}"
                   class="heart d-flex justify-content-center align-items-center"
                 >
                   <span><i class="ion-ios-heart"></i></span>

@@ -205,7 +205,7 @@ Shoppy {% endblock title %} {% block content %}
             <div class="d-flex">
               <div class="pricing">
                 <p class="price">
-                  <span class="price-sale">${{ product.price }}</span>
+                  <span class="price-sale">Ksh {{ product.price }}</span>
                 </p>
               </div>
             </div>
@@ -217,8 +217,8 @@ Shoppy {% endblock title %} {% block content %}
                 >
                   <span><i class="ion-ios-menu"></i></span>
                 </a>
-                <a
-                  href="{% url 'cart' %}"
+                <a 
+                  href="{% url 'cart:add_to_cart' product.id %}"
                   class="buy-now d-flex justify-content-center align-items-center mx-1"
                 >
                   <span><i class="ion-ios-cart"></i></span>

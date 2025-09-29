@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h3>Awaiting Payment</h3>
+  <p>We sent an STK push to {{ phone }} for Order #{{ order.id }} (KES {{ order.total_amount }}).</p>
+  <p>Please complete the prompt on your phone.</p>
+  <a href="/" class="btn btn-primary">Go to home</a>
+</div>
+{% endblock %}
+

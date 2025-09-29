@@ -22,7 +22,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-xl-7 ftco-animate" id="billing-form">
-        <form action="{% url 'checkout' %}" class="billing-form" method="post">
+        <form action="{% url 'cart:checkout' %}" class="billing-form" method="post">
           {% csrf_token %}
           <h3 class="mb-4 billing-heading">Billing Details</h3>
           <div class="row align-items-end">
@@ -68,12 +68,6 @@
             <div class="w-100"></div>
             <div class="col-md-6">
               <div class="form-group">
-                <label for="phone">Phone</label>
-                {{ form.phone }}
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
                 <label for="emailaddress">Email Address</label>
                 {{ form.email }}
               </div>
@@ -84,13 +78,7 @@
                 <button
                   type="submit"
                   class="btn btn-primary py-3 px-4"
-                  {%
-                  if
-                  not
-                  cart_items
-                  %}disabled{%
-                  endif
-                  %}
+                  {% if not cart %}disabled{% endif %}
                 >
                   Place an order
                 </button>
@@ -106,7 +94,7 @@
               <h3 class="billing-heading mb-4">Cart Total</h3>
               <p class="d-flex">
                 <span>Subtotal</span>
-                <span> ksh{{ total_price|floatformat:2 }}</span>
+                <span> ksh{{ cart.get_total_price|floatformat:2 }}</span>
               </p>
               <p class="d-flex">
                 <span>Delivery</span>
@@ -119,7 +107,7 @@
               <hr />
               <p class="d-flex total-price">
                 <span>Total</span>
-                <span>ksh{{ total_price|floatformat:2 }}</span>
+                <span>ksh{{ cart.get_total_price|floatformat:2 }}</span>
               </p>
             </div>
           </div>

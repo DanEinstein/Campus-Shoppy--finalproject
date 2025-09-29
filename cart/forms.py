@@ -1,40 +1,26 @@
 from django import forms
 from .models import Order
 
+PRODUCT_QUANTITY_CHOICES = [(i, str(i)) for i in range(1, 21)]
 
-class CheckoutForm(forms.ModelForm):
+class CartAddProductForm(forms.Form):
+    quantity = forms.TypedChoiceField(
+                                choices=PRODUCT_QUANTITY_CHOICES,
+                                coerce=int)
+    update = forms.BooleanField(required=False,
+                                initial=False,
+                                widget=forms.HiddenInput)
+
+class OrderCreateForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = [
-            'first_name', 'last_name', 'email', 'address', 'city', 'country', 'zip_code'
-        ]
+        fields = ['first_name', 'last_name', 'email', 'address', 'zip_code', 'city', 'country']
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'First Name'
-            }),
-            'last_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Last Name'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Email'
-            }),
-            'address': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Address'
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'City'
-            }),
-            'country': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Country'
-            }),
-            'zip_code': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Zip Code'
-            }),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'address': forms.TextInput(attrs={'class': 'form-control'}),
+            'zip_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'city': forms.TextInput(attrs={'class': 'form-control'}),
+            'country': forms.TextInput(attrs={'class': 'form-control'}),
         }

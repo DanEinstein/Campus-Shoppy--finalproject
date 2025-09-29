@@ -18,34 +18,19 @@
       </div>
       <div class="col-lg-6 product-details pl-md-5 ftco-animate">
         <h3>{{ product.name }}</h3>
-        <div class="rating d-flex">
-          <p class="text-left mr-4">
-            <a href="#" class="mr-2">5.0</a>
-            <a href="#"><span class="ion-ios-star-outline"></span></a>
-            <a href="#"><span class="ion-ios-star-outline"></span></a>
-            <a href="#"><span class="ion-ios-star-outline"></span></a>
-            <a href="#"><span class="ion-ios-star-outline"></span></a>
-            <a href="#"><span class="ion-ios-star-outline"></span></a>
-          </p>
-          <p class="text-left mr-4">
-            <a href="#" class="mr-2" style="color: #000"
-              >100 <span style="color: #bbb">Rating</span></a
-            >
-          </p>
-          <p class="text-left">
-            <a href="#" class="mr-2" style="color: #000"
-              >500 <span style="color: #bbb">Sold</span></a
-            >
-          </p>
+        <div class="d-flex align-items-center mb-2">
+          <span class="badge badge-success mr-2">In Stock</span>
+          <small class="text-muted">Fast delivery within campus</small>
         </div>
-        <p class="price"><span>${{ product.price }}</span></p>
+        <p class="price"><span>Ksh {{ product.price }}</span></p>
         <p>{{ product.details }}</p>
         <form
-          action="{% url 'add_to_cart' product.id %}"
+          action="{% url 'cart:add_to_cart' product.id %}"
           method="post"
           id="add-to-cart-form"
         >
           {% csrf_token %}
+          <input type="hidden" name="update" value="False" />
           <div class="row mt-4">
             <div class="col-md-6">
               <div class="form-group d-flex">
@@ -96,7 +81,7 @@
             </div>
             <div class="w-100"></div>
             <div class="col-md-12">
-              <p style="color: #000">{{ product.stock }} kg available</p>
+              <p class="text-muted">Category: {{ product.category.name }}</p>
             </div>
           </div>
           <p>
@@ -156,12 +141,21 @@
                 >
                   <span><i class="ion-ios-menu"></i></span>
                 </a>
-                <a
-                  href="{% url 'add_to_cart' rel_product.id %}"
-                  class="buy-now d-flex justify-content-center align-items-center mx-1"
+                <form
+                  action="{% url 'cart:add_to_cart' rel_product.id %}"
+                  method="post"
+                  class="d-inline"
                 >
-                  <span><i class="ion-ios-cart"></i></span>
-                </a>
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" value="1" />
+                  <input type="hidden" name="update" value="False" />
+                  <button
+                    type="submit"
+                    class="buy-now d-flex justify-content-center align-items-center mx-1"
+                  >
+                    <span><i class="ion-ios-cart"></i></span>
+                  </button>
+                </form>
                 <a
                   href="{% url 'add_to_wishlist' rel_product.id %}"
                   class="heart d-flex justify-content-center align-items-center"
@@ -198,7 +192,7 @@
             <div class="testimony-wrap p-4 pb-5">
               <div
                 class="user-img mb-5"
-                style="background-image: url({%static'images/person_1.jpg'%})"
+                style="background-image: url({% static 'images/person_1.jpg' %})"
               >
                 <span
                   class="quote d-flex align-items-center justify-content-center"
@@ -208,11 +202,10 @@
               </div>
               <div class="text text-center">
                 <p class="mb-5 pl-4 line">
-                  Far far away, behind the word mountains, far from the
-                  countries Vokalia and Consonantia, there live the blind texts.
+                  Great quality and quick pick-up from the student center. Paid via M-Pesa with no hassle.
                 </p>
-                <p class="name">Garreth Smith</p>
-                <span class="position">Marketing Manager</span>
+                <p class="name">Aisha Njeri</p>
+                <span class="position">Student, UoN</span>
               </div>
             </div>
           </div>
@@ -220,7 +213,7 @@
             <div class="testimony-wrap p-4 pb-5">
               <div
                 class="user-img mb-5"
-                style="background-image: url({%static'images/person_2.jpg'%})"
+                style="background-image: url({% static 'images/person_2.jpg' %})"
               >
                 <span
                   class="quote d-flex align-items-center justify-content-center"
@@ -230,11 +223,31 @@
               </div>
               <div class="text text-center">
                 <p class="mb-5 pl-4 line">
-                  Far far away, behind the word mountains, far from the
-                  countries Vokalia and Consonantia, there live the blind texts.
+                  Smooth experience. Got my books same day and the checkout with STK push was instant.
                 </p>
-                <p class="name">Garreth Smith</p>
-                <span class="position">Interface Designer</span>
+                <p class="name">Brian Otieno</p>
+                <span class="position">Student, KU</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div
+                class="user-img mb-5"
+                style="background-image: url({% static 'images/person_3.jpg' %})"
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  Prices are student-friendly and support was helpful. Will order again.
+                </p>
+                <p class="name">Faith Wanjiru</p>
+                <span class="position">Student, JKUAT</span>
               </div>
             </div>
           </div>

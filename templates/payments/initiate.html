@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h3>Pay with M-Pesa</h3>
+  <p>Order #{{ order.id }} — Total: KES {{ order.total_amount }}</p>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label class="form-label">Phone Number (07XXXXXXXX)</label>
+      <input class="form-control" type="text" name="phone" required>
+    </div>
+    <button class="btn btn-primary" type="submit">Send STK Push</button>
+  </form>
+  <p class="text-muted mt-2">You will receive an M-Pesa prompt on your phone to authorize the payment.</p>
+  <a href="/cart/" class="btn btn-link">Back to cart</a>
+  </div>
+{% endblock %}
+

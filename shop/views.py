@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 def home(request):
     category = Category.objects.all()
-    products = Product.objects.filter(is_draft=False)
+    products = Product.objects.filter(is_draft=False).select_related('category', 'author')
     context = {
         'category': category,
         'products': products
@@ -15,7 +15,7 @@ def home(request):
 
 def shop_page(request):
     category = Category.objects.all()
-    products = Product.objects.filter(is_draft=False)
+    products = Product.objects.filter(is_draft=False).select_related('category', 'author')
     context = {
         'category': category,
         'products': products
@@ -24,9 +24,8 @@ def shop_page(request):
 
 
 def product_details(request, product_id):
-    product_details = Product.objects.get(id=product_id)
-    ctg = Category.objects.get(name=product_details.category)
-    related_products = Product.objects.filter(category=ctg)
+    product_details = get_object_or_404(Product.objects.select_related('category', 'author'), id=product_id)
+    related_products = Product.objects.filter(category=product_details.category).exclude(id=product_id)[:8]
     context = {
         'product': product_details,
         'related_products': related_products
@@ -56,17 +55,3 @@ def remove_from_wishlist(request, item_id):
     wishlist_item.delete()
     return redirect('wishlist')
 
-
-@login_required
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-    cart, _ = Cart.objects.get_or_create(user=request.user)
-    cart_item, created = CartItem.objects.get_or_create(
-        cart=cart, product=product
-    )
-
-    if not created:
-        cart_item.quantity += int(request.POST.get('quantity', 1))
-        cart_item.save()
-
-    return redirect('cart')
