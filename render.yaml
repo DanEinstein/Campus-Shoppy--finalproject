@@ -25,3 +25,7 @@ services:
         value: https://sandbox.safaricom.co.ke
       - key: MPESA_CALLBACK_URL
         value: https://campus-shoppy-maseno-7y1e.onrender.com/payments/callback/
+      - key: DB_ENGINE
+        value: django.db.backends.sqlite3
+      - key: DB_NAME
+        value: db.sqlite3
