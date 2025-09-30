@@ -1,19 +1,133 @@
 {% extends 'base/base.html' %}
+{% load static %}
+
 {% block content %}
 <div class="container py-4">
-  <h3>Pay with M-Pesa</h3>
-  <p>Order #{{ order.id }} — Total: KES {{ order.total_amount }}</p>
-  <form method="post">
-    {% csrf_token %}
-    <div class="mb-3">
-      <label class="form-label">Phone Number</label>
-      <input class="form-control" type="tel" name="phone" placeholder="07XXXXXXXX or 254XXXXXXXXX" required>
-      <small class="form-text text-muted">Enter your M-Pesa registered phone number (e.g., 0712345678 or 254712345678)</small>
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white text-center">
+          <h4 class="mb-0"><i class="fas fa-mobile-alt"></i> M-Pesa Payment</h4>
+        </div>
+        <div class="card-body p-4">
+          <div class="text-center mb-4">
+            <h5>Order #{{ order.id }}</h5>
+            <h3 class="text-primary">KES {{ order.total_amount }}</h3>
+          </div>
+          
+          <form method="post" id="paymentForm">
+            {% csrf_token %}
+            <div class="mb-4">
+              <label class="form-label fw-bold">Phone Number</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                <input class="form-control form-control-lg" 
+                       type="tel" 
+                       name="phone" 
+                       placeholder="0712345678" 
+                       pattern="[0-9]{10,12}"
+                       required
+                       autocomplete="tel">
+              </div>
+              <small class="form-text text-muted">
+                <i class="fas fa-info-circle"></i> Enter your M-Pesa registered phone number
+              </small>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button class="btn btn-success btn-lg" type="submit" id="submitBtn">
+                <i class="fas fa-paper-plane"></i> Send M-Pesa Prompt
+              </button>
+            </div>
+          </form>
+          
+          <div class="mt-4 text-center">
+            <div class="alert alert-info">
+              <i class="fas fa-mobile-alt"></i>
+              <strong>You will receive an M-Pesa prompt on your phone</strong>
+            </div>
+          </div>
+          
+          <div class="text-center mt-3">
+            <a href="/cart/" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left"></i> Back to Cart
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-    <button class="btn btn-primary" type="submit">Send STK Push</button>
-  </form>
-  <p class="text-muted mt-2">You will receive an M-Pesa prompt on your phone to authorize the payment.</p>
-  <a href="/cart/" class="btn btn-link">Back to cart</a>
   </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  .card {
+    margin: 0;
+    border-radius: 0;
+  }
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+}
+
+#submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+</style>
+
+<script>
+document.getElementById('paymentForm').addEventListener('submit', function(e) {
+  const submitBtn = document.getElementById('submitBtn');
+  const phoneInput = document.querySelector('input[name="phone"]');
+  
+  // Basic phone validation
+  const phone = phoneInput.value.replace(/\s/g, '');
+  if (phone.length < 10 || phone.length > 12) {
+    e.preventDefault();
+    alert('Please enter a valid phone number (10-12 digits)');
+    return;
+  }
+  
+  // Show loading state
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+  submitBtn.disabled = true;
+  
+  // Re-enable after 10 seconds in case of error
+  setTimeout(() => {
+    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Send M-Pesa Prompt';
+    submitBtn.disabled = false;
+  }, 10000);
+});
+
+// Auto-format phone number
+document.querySelector('input[name="phone"]').addEventListener('input', function(e) {
+  let value = e.target.value.replace(/\D/g, '');
+  if (value.startsWith('0')) {
+    // Keep as is for 07XXXXXXXX format
+  } else if (value.startsWith('254')) {
+    // Keep as is for 254XXXXXXXXX format
+  } else if (value.length > 0 && !value.startsWith('0') && !value.startsWith('254')) {
+    // Auto-add 0 if user starts typing without it
+    if (value.length <= 9) {
+      value = '0' + value;
+    }
+  }
+  e.target.value = value;
+});
+</script>
 {% endblock %}
 

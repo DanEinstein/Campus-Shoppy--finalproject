@@ -140,6 +140,14 @@ def payment_status(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     try:
         payment = Payment.objects.get(order=order)
+        
+        # Redirect to success page if payment is successful
+        if payment.status == 'success':
+            return render(request, 'payments/success.html', {
+                'order': order,
+                'payment': payment
+            })
+        
         return render(request, 'payments/status.html', {
             'order': order,
             'payment': payment

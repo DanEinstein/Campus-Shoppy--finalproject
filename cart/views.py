@@ -75,7 +75,8 @@ def cart_detail(request):
     A view to display the cart and its items.
     """
     cart = Cart(request)
-    return render(request, 'cart/cart.html', {'cart': cart})
+    # Use mobile-optimized template
+    return render(request, 'cart/cart_mobile.html', {'cart': cart})
 
 
 @login_required
@@ -122,7 +123,7 @@ def checkout(request):
             return redirect(reverse('payments:initiate', args=[order.id]))
     else:
         form = OrderCreateForm()
-    return render(request, 'cart/checkout.html', {'cart': cart, 'form': form})
+    return render(request, 'cart/checkout_mobile.html', {'cart': cart, 'form': form})
 
 
 def update_cart(request):

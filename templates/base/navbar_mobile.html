@@ -1,0 +1,143 @@
+<!-- Mobile-optimized navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold text-primary" href="{% url 'home' %}">
+      <i class="fas fa-shopping-bag me-2"></i>Campus Shoppy
+    </a>
+    
+    <!-- Mobile cart and menu toggle -->
+    <div class="d-flex align-items-center">
+      <!-- Cart -->
+      <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-primary me-2 position-relative">
+        <i class="fas fa-shopping-cart"></i>
+        {% if cart %}
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cart|length }}
+          </span>
+        {% endif %}
+      </a>
+      
+      <!-- Mobile menu toggle -->
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+    
+    <!-- Collapsible menu -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home' %}">
+            <i class="fas fa-home me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'shop' %}">
+            <i class="fas fa-store me-1"></i>Shop
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'about' %}">
+            <i class="fas fa-info-circle me-1"></i>About
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}">
+            <i class="fas fa-envelope me-1"></i>Contact
+          </a>
+        </li>
+      </ul>
+      
+      <!-- User actions -->
+      <ul class="navbar-nav">
+        {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fas fa-user me-1"></i>{{ user.first_name|default:user.username }}
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Profile</a></li>
+              <li><a class="dropdown-item" href="#"><i class="fas fa-shopping-bag me-2"></i>Orders</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'account:logout' %}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account:signin' %}">
+              <i class="fas fa-sign-in-alt me-1"></i>Login
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'account:signup' %}">
+              <i class="fas fa-user-plus me-1"></i>Register
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Top banner for mobile -->
+<div class="bg-primary text-white py-2 d-lg-none">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-8">
+        <small><i class="fas fa-truck me-1"></i>Free delivery on orders over Ksh 2,000</small>
+      </div>
+      <div class="col-4 text-end">
+        <small><i class="fas fa-phone me-1"></i>+254 712 484 071</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 0;
+  }
+  
+  .navbar-brand {
+    font-size: 1.2rem;
+  }
+  
+  .btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  .badge {
+    font-size: 0.6rem;
+  }
+}
+
+.navbar-brand {
+  color: #007bff !important;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #495057 !important;
+}
+
+.nav-link:hover {
+  color: #007bff !important;
+}
+
+.dropdown-menu {
+  border: none;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  border-radius: 0.5rem;
+}
+
+.dropdown-item {
+  padding: 0.5rem 1rem;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+}
+</style>

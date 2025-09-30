@@ -1,0 +1,248 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Checkout - Campus Shoppy{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <h2 class="mb-4"><i class="fas fa-credit-card"></i> Checkout</h2>
+    </div>
+  </div>
+  
+  <div class="row">
+    <!-- Order Summary -->
+    <div class="col-12 col-lg-4 mb-4">
+      <div class="card sticky-top">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="fas fa-shopping-bag"></i> Order Summary</h5>
+        </div>
+        <div class="card-body">
+          {% for item in cart %}
+          <div class="d-flex align-items-center mb-3">
+            <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" 
+                 class="rounded me-3" 
+                 style="width: 50px; height: 50px; object-fit: cover;">
+            <div class="flex-grow-1">
+              <h6 class="mb-0">{{ item.product.name }}</h6>
+              <small class="text-muted">Qty: {{ item.quantity }}</small>
+            </div>
+            <div class="text-end">
+              <strong>Ksh {{ item.total_price }}</strong>
+            </div>
+          </div>
+          {% endfor %}
+          
+          <hr>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal ({{ cart|length }} items)</span>
+            <span>Ksh {{ cart.get_total_price }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Delivery</span>
+            <span class="text-success">Free</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Discount</span>
+            <span>Ksh 0.00</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-3">
+            <strong>Total</strong>
+            <strong class="text-success">Ksh {{ cart.get_total_price }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Checkout Form -->
+    <div class="col-12 col-lg-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0"><i class="fas fa-user"></i> Billing Details</h5>
+        </div>
+        <div class="card-body">
+          <form action="{% url 'cart:checkout' %}" method="post" id="checkoutForm">
+            {% csrf_token %}
+            
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="id_first_name" class="form-label">First Name *</label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                  <div class="text-danger small">{{ form.first_name.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="id_last_name" class="form-label">Last Name *</label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                  <div class="text-danger small">{{ form.last_name.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-12 mb-3">
+                <label for="id_email" class="form-label">Email Address *</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                  <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-12 mb-3">
+                <label for="id_address" class="form-label">Street Address *</label>
+                {{ form.address }}
+                {% if form.address.errors %}
+                  <div class="text-danger small">{{ form.address.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-12 col-md-6 mb-3">
+                <label for="id_city" class="form-label">City *</label>
+                {{ form.city }}
+                {% if form.city.errors %}
+                  <div class="text-danger small">{{ form.city.errors.0 }}</div>
+                {% endif %}
+              </div>
+              <div class="col-12 col-md-6 mb-3">
+                <label for="id_zip_code" class="form-label">Postal Code *</label>
+                {{ form.zip_code }}
+                {% if form.zip_code.errors %}
+                  <div class="text-danger small">{{ form.zip_code.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-12 mb-3">
+                <label for="id_country" class="form-label">Country *</label>
+                {{ form.country }}
+                {% if form.country.errors %}
+                  <div class="text-danger small">{{ form.country.errors.0 }}</div>
+                {% endif %}
+              </div>
+            </div>
+            
+            <!-- Payment Method -->
+            <div class="mb-4">
+              <h6 class="mb-3"><i class="fas fa-mobile-alt"></i> Payment Method</h6>
+              <div class="alert alert-info">
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-mobile-alt fa-2x me-3 text-primary"></i>
+                  <div>
+                    <h6 class="mb-1">M-Pesa Payment</h6>
+                    <p class="mb-0 small">You'll receive an M-Pesa prompt on your phone to complete payment</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Terms and Conditions -->
+            <div class="mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                <label class="form-check-label" for="termsCheck">
+                  I have read and accept the <a href="#" class="text-primary">terms and conditions</a>
+                </label>
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" 
+                      class="btn btn-success btn-lg" 
+                      {% if not cart %}disabled{% endif %}
+                      id="placeOrderBtn">
+                <i class="fas fa-credit-card"></i> 
+                Place Order & Pay with M-Pesa
+              </button>
+            </div>
+            
+            {% if not cart %}
+            <div class="alert alert-warning mt-3">
+              <i class="fas fa-exclamation-triangle"></i> Your cart is empty. 
+              <a href="/shop/" class="text-primary">Continue shopping</a>
+            </div>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+  .card {
+    margin: 0;
+    border-radius: 0;
+  }
+  .sticky-top {
+    position: relative !important;
+  }
+}
+
+.btn {
+  border-radius: 0.5rem;
+  font-weight: 500;
+}
+
+.card {
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-control {
+  border-radius: 0.5rem;
+}
+
+.alert {
+  border-radius: 0.75rem;
+}
+
+#placeOrderBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+</style>
+
+<script>
+document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+  const termsCheck = document.getElementById('termsCheck');
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  
+  if (!termsCheck.checked) {
+    e.preventDefault();
+    alert('Please accept the terms and conditions to continue.');
+    return;
+  }
+  
+  // Show loading state
+  placeOrderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+  placeOrderBtn.disabled = true;
+  
+  // Re-enable after 10 seconds in case of error
+  setTimeout(() => {
+    placeOrderBtn.innerHTML = '<i class="fas fa-credit-card"></i> Place Order & Pay with M-Pesa';
+    placeOrderBtn.disabled = false;
+  }, 10000);
+});
+
+// Auto-focus first empty field
+document.addEventListener('DOMContentLoaded', function() {
+  const firstEmptyField = document.querySelector('input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"])');
+  if (firstEmptyField) {
+    firstEmptyField.focus();
+  }
+});
+</script>
+{% endblock %}
