@@ -53,11 +53,11 @@ git push -u origin main
 
 ### 2. Configure Service
 - **Name**: `campus-shoppy`
-- **Environment**: `Python 3.11`
+- **Environment**: `Python 3.11.10`
 - **Region**: Choose closest to Kenya
 - **Branch**: `main`
 - **Root Directory**: Leave empty
-- **Build Command**: `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
+- **Build Command**: `pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`
 - **Start Command**: `gunicorn django_ecommerce.wsgi`
 
 ### 3. Set Environment Variables
