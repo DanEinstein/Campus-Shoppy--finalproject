@@ -3,7 +3,6 @@ from shop.models import Product
 
 
 def home_view(request):
-    """A simple view for the homepage."""
-    # Minimal context to avoid database issues
-    context = {}
-    return render(request, "home_minimal.html", context)
+    """Emergency homepage view - no database dependencies."""
+    # Completely safe - no database queries, no context
+    return render(request, "home_emergency.html", {})
