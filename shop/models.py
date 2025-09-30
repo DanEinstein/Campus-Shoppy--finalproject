@@ -20,6 +20,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     author = models.ForeignKey(AuthorProfile, on_delete=models.CASCADE)
     is_draft = models.BooleanField(default=False)
+    featured = models.BooleanField(default=False)
     date = models.DateTimeField(auto_now_add=True)
     inventory = models.IntegerField(default=1)
 
