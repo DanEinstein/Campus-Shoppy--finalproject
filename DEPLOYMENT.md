@@ -66,13 +66,13 @@ In Render dashboard, go to Environment tab and add:
 ```
 DJANGO_SECRET_KEY=your-production-secret-key
 DJANGO_DEBUG=False
-DJANGO_ALLOWED_HOSTS=campus-shoppy-maseno.onrender.com
+DJANGO_ALLOWED_HOSTS=*.onrender.com,campus-shoppy-maseno-7y1e.onrender.com
 MPESA_CONSUMER_KEY=your_mpesa_consumer_key
 MPESA_CONSUMER_SECRET=your_mpesa_consumer_secret
 MPESA_SHORTCODE=your_mpesa_shortcode
 MPESA_PASSKEY=your_mpesa_passkey
 MPESA_BASE_URL=https://sandbox.safaricom.co.ke
-MPESA_CALLBACK_URL=https://campus-shoppy-maseno.onrender.com/payments/callback/
+MPESA_CALLBACK_URL=https://campus-shoppy-maseno-7y1e.onrender.com/payments/callback/
 ```
 
 ### 4. Deploy
