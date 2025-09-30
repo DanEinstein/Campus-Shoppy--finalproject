@@ -1,0 +1,127 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Confirm Payment - Campus Shoppy{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3><i class="fas fa-check-circle"></i> Manual Payment Confirmation</h3>
+        </div>
+        <div class="card-body">
+          {% if payment %}
+            <div class="alert alert-info">
+              <h5>Order #{{ order.id }}</h5>
+              <p><strong>Amount:</strong> Ksh {{ order.total_amount }}</p>
+              <p><strong>Phone:</strong> {{ payment.phone_number }}</p>
+              <p><strong>Status:</strong> {{ payment.status|title }}</p>
+              {% if payment.checkout_request_id %}
+                <p><strong>M-Pesa Request ID:</strong> {{ payment.checkout_request_id }}</p>
+              {% endif %}
+            </div>
+            
+            <div class="alert alert-warning">
+              <h6><i class="fas fa-exclamation-triangle"></i> Manual Verification Required</h6>
+              <p>Please check your phone for the M-Pesa payment prompt and complete the payment. Then confirm the result below:</p>
+            </div>
+            
+            <form method="post" id="confirmForm">
+              {% csrf_token %}
+              <div class="form-group">
+                <label>Payment Result:</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="confirmation_type" id="success" value="success" required>
+                  <label class="form-check-label text-success" for="success">
+                    <i class="fas fa-check-circle"></i> Payment Successful
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="confirmation_type" id="failed" value="failed" required>
+                  <label class="form-check-label text-danger" for="failed">
+                    <i class="fas fa-times-circle"></i> Payment Failed
+                  </label>
+                </div>
+              </div>
+              
+              <div class="mt-4">
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-check"></i> Confirm Payment Status
+                </button>
+                <a href="{% url 'payments:status' order.id %}" class="btn btn-secondary">
+                  <i class="fas fa-arrow-left"></i> Back to Status
+                </a>
+              </div>
+            </form>
+            
+            <div class="mt-4">
+              <div class="alert alert-light">
+                <h6><i class="fas fa-info-circle"></i> Instructions:</h6>
+                <ol>
+                  <li>Check your phone for the M-Pesa payment prompt</li>
+                  <li>Enter your M-Pesa PIN when prompted</li>
+                  <li>Wait for the payment confirmation SMS</li>
+                  <li>Return here and select the appropriate result</li>
+                </ol>
+              </div>
+            </div>
+            
+          {% else %}
+            <div class="alert alert-danger">
+              <h5>No Payment Found</h5>
+              <p>No payment record found for this order.</p>
+              <a href="{% url 'payments:initiate' order.id %}" class="btn btn-primary">Initiate Payment</a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('confirmForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const formData = new FormData(this);
+  const confirmationType = formData.get('confirmation_type');
+  
+  if (!confirmationType) {
+    alert('Please select a payment result');
+    return;
+  }
+  
+  // Show loading state
+  const submitBtn = this.querySelector('button[type="submit"]');
+  const originalText = submitBtn.innerHTML;
+  submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Confirming...';
+  submitBtn.disabled = true;
+  
+  fetch(this.action, {
+    method: 'POST',
+    body: formData,
+    headers: {
+      'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      alert(data.message);
+      window.location.href = "{% url 'payments:status' order.id %}";
+    } else {
+      alert('Error: ' + data.message);
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }
+  })
+  .catch(error => {
+    alert('Error: ' + error.message);
+    submitBtn.innerHTML = originalText;
+    submitBtn.disabled = false;
+  });
+});
+</script>
+{% endblock %}

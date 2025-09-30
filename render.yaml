@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: campus-shoppy
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate
+    startCommand: gunicorn django_ecommerce.wsgi
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DJANGO_DEBUG
+        value: False
+      - key: DJANGO_ALLOWED_HOSTS
+        value: campus-shoppy.onrender.com
+      - key: MPESA_CONSUMER_KEY
+        sync: false
+      - key: MPESA_CONSUMER_SECRET
+        sync: false
+      - key: MPESA_SHORTCODE
+        sync: false
+      - key: MPESA_PASSKEY
+        sync: false
+      - key: MPESA_BASE_URL
+        value: https://sandbox.safaricom.co.ke
+      - key: MPESA_CALLBACK_URL
+        sync: false

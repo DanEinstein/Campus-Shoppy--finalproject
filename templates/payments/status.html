@@ -1,0 +1,77 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="mb-0">Payment Status</h3>
+        </div>
+        <div class="card-body">
+          <h5>Order #{{ order.id }}</h5>
+          <p><strong>Total Amount:</strong> KES {{ order.total_amount }}</p>
+          <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y H:i" }}</p>
+          
+          {% if payment %}
+            <div class="mt-4">
+              {% if payment.status == 'success' %}
+                <div class="alert alert-success">
+                  <h4><i class="fas fa-check-circle"></i> Payment Successful!</h4>
+                  <p>Your payment has been processed successfully.</p>
+                  {% if payment.receipt_number %}
+                    <p><strong>M-Pesa Receipt:</strong> {{ payment.receipt_number }}</p>
+                  {% endif %}
+                </div>
+                <a href="/" class="btn btn-success">Continue Shopping</a>
+                
+              {% elif payment.status == 'cancelled' %}
+                <div class="alert alert-warning">
+                  <h4><i class="fas fa-times-circle"></i> Payment Cancelled</h4>
+                  <p>You cancelled the payment. Your order is still pending payment.</p>
+                  <p><strong>Reason:</strong> {{ payment.result_desc|default:"Payment was cancelled by user" }}</p>
+                </div>
+                <div class="mt-3">
+                  <a href="{% url 'payments:initiate' order.id %}" class="btn btn-primary">Try Payment Again</a>
+                  <a href="{% url 'payments:verify' order.id %}" class="btn btn-info">Verify Payment</a>
+                  <a href="/cart/" class="btn btn-secondary">Back to Cart</a>
+                </div>
+                
+              {% elif payment.status == 'failed' %}
+                <div class="alert alert-danger">
+                  <h4><i class="fas fa-exclamation-triangle"></i> Payment Failed</h4>
+                  <p>Your payment could not be processed.</p>
+                  <p><strong>Reason:</strong> {{ payment.result_desc|default:"Payment failed" }}</p>
+                </div>
+                <div class="mt-3">
+                  <a href="{% url 'payments:initiate' order.id %}" class="btn btn-primary">Try Payment Again</a>
+                  <a href="{% url 'payments:verify' order.id %}" class="btn btn-info">Verify Payment</a>
+                  <a href="/cart/" class="btn btn-secondary">Back to Cart</a>
+                </div>
+                
+              {% elif payment.status == 'pending' %}
+                <div class="alert alert-info">
+                  <h4><i class="fas fa-clock"></i> Payment Pending</h4>
+                  <p>Please complete the M-Pesa prompt on your phone.</p>
+                  <p>If you haven't received the prompt, you can try again.</p>
+                </div>
+                <div class="mt-3">
+                  <a href="{% url 'payments:initiate' order.id %}" class="btn btn-primary">Try Payment Again</a>
+                  <a href="{% url 'payments:verify' order.id %}" class="btn btn-info">Verify Payment</a>
+                  <a href="{% url 'payments:confirm' order.id %}" class="btn btn-warning">Manual Confirm</a>
+                  <a href="{% url 'payments:status' order.id %}" class="btn btn-secondary">Refresh Status</a>
+                </div>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="alert alert-info">
+              <h4>No Payment Initiated</h4>
+              <p>No payment has been initiated for this order yet.</p>
+            </div>
+            <a href="{% url 'payments:initiate' order.id %}" class="btn btn-primary">Start Payment</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

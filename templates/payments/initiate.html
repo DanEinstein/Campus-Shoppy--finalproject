@@ -6,8 +6,9 @@
   <form method="post">
     {% csrf_token %}
     <div class="mb-3">
-      <label class="form-label">Phone Number (07XXXXXXXX)</label>
-      <input class="form-control" type="text" name="phone" required>
+      <label class="form-label">Phone Number</label>
+      <input class="form-control" type="tel" name="phone" placeholder="07XXXXXXXX or 254XXXXXXXXX" required>
+      <small class="form-text text-muted">Enter your M-Pesa registered phone number (e.g., 0712345678 or 254712345678)</small>
     </div>
     <button class="btn btn-primary" type="submit">Send STK Push</button>
   </form>

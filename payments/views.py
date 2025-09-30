@@ -35,6 +35,22 @@ def initiate_payment(request, order_id):
         phone = request.POST.get('phone')
         if not phone:
             return HttpResponseBadRequest('Phone number required')
+        
+        # Format phone number for M-Pesa (remove spaces, ensure it starts with 254)
+        phone = phone.strip().replace(' ', '').replace('-', '')
+        if phone.startswith('0'):
+            phone = '254' + phone[1:]
+        elif phone.startswith('+254'):
+            phone = phone[1:]
+        elif not phone.startswith('254'):
+            phone = '254' + phone
+        
+        # Validate phone number format
+        if len(phone) != 12 or not phone.startswith('254'):
+            return render(request, 'payments/failed.html', {
+                'order': order, 
+                'error': 'Invalid phone number. Use format: 07XXXXXXXX or 254XXXXXXXXX'
+            })
 
         payment, _ = Payment.objects.get_or_create(order=order, defaults={
             'phone_number': phone,
@@ -97,6 +113,7 @@ def mpesa_callback(request):
     payment.result_desc = result_desc
 
     if result_code == '0':
+        # Payment successful
         metadata = result.get('CallbackMetadata', {}).get('Item', [])
         receipt = next((i['Value'] for i in metadata if i.get('Name') == 'MpesaReceiptNumber'), '')
         amount = next((i['Value'] for i in metadata if i.get('Name') == 'Amount'), None)
@@ -106,9 +123,202 @@ def mpesa_callback(request):
         payment.status = 'success'
         payment.order.paid = True
         payment.order.save(update_fields=['paid'])
+    elif result_code == '1':
+        # User cancelled the payment
+        payment.status = 'cancelled'
     else:
+        # Payment failed for other reasons
         payment.status = 'failed'
 
     payment.save()
     return JsonResponse({'status': payment.status})
+
+
+@login_required
+def payment_status(request, order_id):
+    """View to check payment status for an order"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    try:
+        payment = Payment.objects.get(order=order)
+        return render(request, 'payments/status.html', {
+            'order': order,
+            'payment': payment
+        })
+    except Payment.DoesNotExist:
+        return render(request, 'payments/status.html', {
+            'order': order,
+            'payment': None
+        })
+
+
+@login_required
+def verify_payment(request, order_id):
+    """Manually verify payment status with M-Pesa"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    try:
+        payment = Payment.objects.get(order=order)
+        
+        # First, check if payment already has a result
+        if payment.result_code and payment.result_code != '0':
+            return JsonResponse({
+                'status': 'success',
+                'payment_status': payment.status,
+                'result_code': payment.result_code,
+                'result_desc': payment.result_desc,
+                'message': 'Payment status already determined'
+            })
+        
+        if payment.checkout_request_id:
+            # Try M-Pesa query API first
+            try:
+                token = _mpesa_token()
+                print(f"M-Pesa Token: {token[:20]}...")  # Debug: show first 20 chars
+                
+                query_url = f"{settings.MPESA_BASE_URL}/mpesa/stkpushquery/v1/query"
+                password, timestamp = _mpesa_password()
+                
+                payload = {
+                    "BusinessShortCode": settings.MPESA_SHORTCODE,
+                    "Password": password,
+                    "Timestamp": timestamp,
+                    "CheckoutRequestID": payment.checkout_request_id
+                }
+                
+                print(f"Query URL: {query_url}")
+                print(f"Payload: {payload}")
+                
+                headers = {
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"
+                }
+                
+                response = requests.post(query_url, headers=headers, json=payload, timeout=30)
+                
+                # Debug logging
+                print(f"M-Pesa Query Response Status: {response.status_code}")
+                print(f"M-Pesa Query Response: {response.text}")
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    result_code = data.get('ResultCode')
+                    result_desc = data.get('ResultDesc', '')
+                    
+                    # Update payment status based on query result
+                    if result_code == 0:
+                        payment.status = 'success'
+                        payment.result_code = str(result_code)
+                        payment.result_desc = result_desc
+                        payment.order.paid = True
+                        payment.order.save(update_fields=['paid'])
+                    else:
+                        payment.status = 'failed'
+                        payment.result_code = str(result_code)
+                        payment.result_desc = result_desc
+                    
+                    payment.save()
+                    
+                    return JsonResponse({
+                        'status': 'success',
+                        'payment_status': payment.status,
+                        'result_code': result_code,
+                        'result_desc': result_desc
+                    })
+                else:
+                    # If M-Pesa query fails, provide manual verification option
+                    return JsonResponse({
+                        'status': 'manual_verification',
+                        'message': 'M-Pesa query failed. Please check your phone for payment confirmation or try again later.',
+                        'payment_status': payment.status,
+                        'checkout_request_id': payment.checkout_request_id
+                    })
+                    
+            except Exception as e:
+                print(f"M-Pesa query error: {str(e)}")
+                # Fallback to manual verification
+                return JsonResponse({
+                    'status': 'manual_verification',
+                    'message': f'M-Pesa API unavailable: {str(e)}. Please check your phone for payment confirmation.',
+                    'payment_status': payment.status,
+                    'checkout_request_id': payment.checkout_request_id
+                })
+        else:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'No checkout request ID found'
+            })
+            
+    except Payment.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Payment record not found'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        })
+
+
+@login_required
+def confirm_payment(request, order_id):
+    """Manually confirm payment when M-Pesa query is not available"""
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    if request.method == 'POST':
+        try:
+            payment = Payment.objects.get(order=order)
+            confirmation_type = request.POST.get('confirmation_type')
+            
+            if confirmation_type == 'success':
+                payment.status = 'success'
+                payment.result_code = '0'
+                payment.result_desc = 'Payment confirmed manually'
+                payment.order.paid = True
+                payment.order.save(update_fields=['paid'])
+                payment.save()
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Payment confirmed successfully'
+                })
+            elif confirmation_type == 'failed':
+                payment.status = 'failed'
+                payment.result_code = '1'
+                payment.result_desc = 'Payment failed - confirmed manually'
+                payment.save()
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Payment marked as failed'
+                })
+            else:
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Invalid confirmation type'
+                })
+                
+        except Payment.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Payment record not found'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    # GET request - show confirmation form
+    try:
+        payment = Payment.objects.get(order=order)
+        return render(request, 'payments/confirm.html', {
+            'order': order,
+            'payment': payment
+        })
+    except Payment.DoesNotExist:
+        return render(request, 'payments/confirm.html', {
+            'order': order,
+            'payment': None
+        })
 
