@@ -1,0 +1,566 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Home | Campus Shoppy{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Background Images -->
+<section id="home-section" class="hero">
+  <div class="home-slider owl-carousel">
+    <div class="slider-item" style="background-image: url({% static 'images/happyMasenostudents.jpg' %})">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+          <div class="col-md-12 ftco-animate text-center">
+            <h1 class="mb-2">Welcome to Campus Shoppy</h1>
+            <h2 class="subheading mb-4">
+              We deliver to wherever you are Anytime, Anyplace. Create your account now!
+            </h2>
+            <p>
+              <a href="{% url 'shop' %}" class="btn btn-primary">View Details</a>
+              <a href="{% url 'signup' %}" class="btn btn-outline-primary">Create Account</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="slider-item" style="background-image: url({% static 'images/happy.jpg' %})">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row slider-text justify-content-center align-items-center" data-scrollax-parent="true">
+          <div class="col-sm-12 ftco-animate text-center">
+            <h1 class="mb-2">100% Quality Goods</h1>
+            <h2 class="subheading mb-4">
+              We deliver quality products to wherever you are. Create your account now!
+            </h2>
+            <p>
+              <a href="{% url 'shop' %}" class="btn btn-primary">View Details</a>
+              <a href="{% url 'signup' %}" class="btn btn-outline-primary">Create Account</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section class="ftco-section">
+  <div class="container">
+    <div class="row no-gutters ftco-services">
+      <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services mb-md-0 mb-4">
+          <div class="icon bg-color-1 active d-flex justify-content-center align-items-center mb-2">
+            <span class="flaticon-shipped"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Free Shipping</h3>
+            <span>On order over Ksh 2,000</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services mb-md-0 mb-4">
+          <div class="icon bg-color-2 d-flex justify-content-center align-items-center mb-2">
+            <span class="flaticon-diet"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Quality goods</h3>
+            <span>Product always on good Quality</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services mb-md-0 mb-4">
+          <div class="icon bg-color-3 d-flex justify-content-center align-items-center mb-2">
+            <span class="flaticon-award"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Superior Quality</h3>
+            <span>Quality Products</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
+        <div class="media block-6 services mb-md-0 mb-4">
+          <div class="icon bg-color-4 d-flex justify-content-center align-items-center mb-2">
+            <span class="flaticon-customer-service"></span>
+          </div>
+          <div class="media-body">
+            <h3 class="heading">Support</h3>
+            <span>24/7 Support</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Category Section with Background Images -->
+<section class="ftco-section ftco-category ftco-no-pt">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-6 order-md-last align-items-stretch d-flex">
+            <div class="category-wrap-2 ftco-animate img align-self-stretch d-flex" 
+                 style="background-image: url({% static 'images/Africanvendor.jpg' %});">
+              <div class="text text-center">
+                <h2>Shop Everything</h2>
+                <p>Get the best from the best</p>
+                <p><a href="{% url 'shop' %}" class="btn btn-primary">Shop now</a></p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="category-wrap ftco-animate img mb-4 d-flex align-items-end" 
+                 style="background-image: url({% static 'images/shoe rack.webp' %})">
+              <div class="text px-3 py-1">
+                <h2 class="mb-0"><a href="{% url 'shop' %}">Household Items</a></h2>
+              </div>
+            </div>
+            <div class="category-wrap ftco-animate img d-flex align-items-end" 
+                 style="background-image: url({% static 'images/Sayona woofers image.webp' %});">
+              <div class="text px-3 py-1">
+                <h2 class="mb-0"><a href="{% url 'shop' %}">Sound Systems</a></h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="category-wrap ftco-animate img mb-4 d-flex align-items-end" 
+             style="background-image: url({% static 'images/samsung phone.jpg' %})">
+          <div class="text px-3 py-1">
+            <h2 class="mb-0"><a href="{% url 'shop' %}">Phones</a></h2>
+          </div>
+        </div>
+        <div class="category-wrap ftco-animate img d-flex align-items-end" 
+             style="background-image: url({% static 'images/kenyan watch.jpg' %})">
+          <div class="text px-3 py-1">
+            <h2 class="mb-0"><a href="{% url 'shop' %}">Watches</a></h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Products Section -->
+<section class="ftco-section">
+  <div class="container">
+    <div class="row justify-content-center mb-3 pb-3">
+      <div class="col-md-12 heading-section text-center ftco-animate">
+        <span class="subheading">Latest Products</span>
+        <h2 class="mb-4">Our Products</h2>
+        <p>Here you will get all the products available in our store</p>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      {% if products %}
+        {% for product in products %}
+        <div class="col-md-6 col-lg-3 ftco-animate">
+          <div class="product">
+            <a href="{% url 'shop:product-details' product.id %}" class="img-prod">
+              <img class="img-fluid" 
+                   src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" 
+                   alt="{{ product.name }}" />
+              <div class="overlay"></div>
+            </a>
+            <div class="text py-3 pb-4 px-3 text-center">
+              <h3>
+                <a href="{% url 'shop:product-details' product.id %}">{{ product.name }}</a>
+              </h3>
+              <div class="d-flex">
+                <div class="pricing">
+                  <p class="price">
+                    <span class="price-sale">Ksh {{ product.price }}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="bottom-area d-flex px-3">
+                <div class="m-auto d-flex">
+                  <a href="{% url 'shop:product-details' product.id %}" 
+                     class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                    <span><i class="ion-ios-menu"></i></span>
+                  </a>
+                  <a href="{% url 'cart:add_to_cart' product.id %}" 
+                     class="buy-now d-flex justify-content-center align-items-center mx-1">
+                    <span><i class="ion-ios-cart"></i></span>
+                  </a>
+                  <a href="#" class="heart d-flex justify-content-center align-items-center">
+                    <span><i class="ion-ios-heart"></i></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="col-12 text-center">
+          <div class="alert alert-info">
+            <h4><i class="fas fa-info-circle"></i> Discover Our Products</h4>
+            <p class="mb-3">Browse our amazing collection of quality products</p>
+            <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">
+              <i class="fas fa-store me-2"></i>Browse All Products
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="ftco-section testimony-section">
+  <div class="container">
+    <div class="row justify-content-center mb-5 pb-3">
+      <div class="col-md-7 heading-section ftco-animate text-center">
+        <span class="subheading">Testimony</span>
+        <h2 class="mb-4">Our satisfied customer says</h2>
+        <p>These are some of the Reviews made by our customers</p>
+      </div>
+    </div>
+    <div class="row ftco-animate">
+      <div class="col-md-12">
+        <div class="carousel-testimony owl-carousel">
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div class="user-img mb-5" style="background-image: url({% static 'images/person1.jpg' %})">
+                <span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  Campus Shoppy has changed completely the way that we carry out our online shopping here in Maseno University
+                </p>
+                <p class="name">Joshua Mwangari</p>
+                <span class="position">Shop Owner</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div class="user-img mb-5" style="background-image: url({% static 'images/person2.jpg' %})">
+                <span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  I nowadays don't struggle or think of how i am going to make orders online. Campus Shoppy imenisort!
+                </p>
+                <p class="name">Brenda Atieno</p>
+                <span class="position">Customer</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div class="user-img mb-5" style="background-image: url({% static 'images/person1.jpg' %})">
+                <span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  Before Campus Shoppy we had a hard time because we had to order all of the items from Kisumu and wait until they are delivered by a Matatu
+                </p>
+                <p class="name">Morris Ojwang</p>
+                <span class="position">Maseno Business Owner</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div class="user-img mb-5" style="background-image: url({% static 'images/person1.jpg' %})">
+                <span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  We are actually happy as a School finding the creativity from our own students
+                </p>
+                <p class="name">Solomon Nyabundi</p>
+                <span class="position">Faculty Member</span>
+              </div>
+            </div>
+          </div>
+          <div class="item">
+            <div class="testimony-wrap p-4 pb-5">
+              <div class="user-img mb-5" style="background-image: url({% static 'images/person2.jpg' %})">
+                <span class="quote d-flex align-items-center justify-content-center">
+                  <i class="icon-quote-left"></i>
+                </span>
+              </div>
+              <div class="text text-center">
+                <p class="mb-5 pl-4 line">
+                  It is actually an inspiration to the other students from our campus and we appreciate Campus Shoppy for the good work they are doing.
+                </p>
+                <p class="name">Joyce Lilian</p>
+                <span class="position">Faculty Member</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Newsletter Section -->
+<hr />
+<section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
+  <div class="container py-4">
+    <div class="row d-flex justify-content-center py-5">
+      <div class="col-md-6">
+        <h2 style="font-size: 22px" class="mb-0">Subscribe to our Newsletter</h2>
+        <span>Get e-mail updates about our latest shops and special offers</span>
+      </div>
+      <div class="col-md-6 d-flex align-items-center">
+        <form class="subscribe-form" method="POST">
+          <div class="form-group d-flex">
+            {% csrf_token %}
+            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+            <input type="submit" value="Subscribe" class="submit px-3" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mobile Optimization Styles -->
+<style>
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 50vh;
+  }
+  
+  .slider-item {
+    min-height: 50vh;
+  }
+  
+  .slider-text h1 {
+    font-size: 2rem;
+  }
+  
+  .slider-text .subheading {
+    font-size: 1.1rem;
+  }
+  
+  .btn {
+    margin: 0.25rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .category-wrap {
+    min-height: 200px;
+  }
+  
+  .category-wrap-2 {
+    min-height: 300px;
+  }
+  
+  .testimony-wrap {
+    padding: 1rem;
+  }
+  
+  .subscribe-form {
+    flex-direction: column;
+  }
+  
+  .subscribe-form .form-control {
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    min-height: 40vh;
+  }
+  
+  .slider-item {
+    min-height: 40vh;
+  }
+  
+  .slider-text h1 {
+    font-size: 1.5rem;
+  }
+  
+  .slider-text .subheading {
+    font-size: 1rem;
+  }
+  
+  .category-wrap {
+    min-height: 150px;
+  }
+  
+  .category-wrap-2 {
+    min-height: 250px;
+  }
+}
+
+/* Ensure proper scrolling on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Hero section improvements */
+.hero {
+  position: relative;
+  overflow: hidden;
+}
+
+.slider-item {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.slider-text {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+/* Category section improvements */
+.category-wrap {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.category-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+  z-index: 1;
+}
+
+.category-wrap .text {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.category-wrap-2 {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.category-wrap-2::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3));
+  z-index: 1;
+}
+
+.category-wrap-2 .text {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+</style>
+
+<!-- Owl Carousel and Animation Scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize owl carousel for hero section
+  if (typeof $ !== 'undefined' && $.fn.owlCarousel) {
+    $('.home-slider').owlCarousel({
+      loop: true,
+      margin: 0,
+      nav: true,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 5000,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 1
+        },
+        1000: {
+          items: 1
+        }
+      }
+    });
+    
+    // Initialize testimonials carousel
+    $('.carousel-testimony').owlCarousel({
+      loop: true,
+      margin: 30,
+      nav: false,
+      dots: true,
+      autoplay: true,
+      autoplayTimeout: 4000,
+      autoplayHoverPause: true,
+      responsive: {
+        0: {
+          items: 1
+        },
+        600: {
+          items: 2
+        },
+        1000: {
+          items: 3
+        }
+      }
+    });
+  }
+  
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

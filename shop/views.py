@@ -14,8 +14,14 @@ def home(request):
 
 
 def shop_page(request):
-    category = Category.objects.all()
-    products = Product.objects.filter(is_draft=False).select_related('category', 'author')
+    try:
+        category = Category.objects.all()
+        products = Product.objects.filter(is_draft=False).select_related('category', 'author')
+    except Exception as e:
+        # If there's any database error, use empty querysets
+        category = Category.objects.none()
+        products = Product.objects.none()
+    
     context = {
         'category': category,
         'products': products
@@ -24,8 +30,14 @@ def shop_page(request):
 
 
 def product_details(request, product_id):
-    product_details = get_object_or_404(Product.objects.select_related('category', 'author'), id=product_id)
-    related_products = Product.objects.filter(category=product_details.category).exclude(id=product_id)[:8]
+    try:
+        product_details = get_object_or_404(Product.objects.select_related('category', 'author'), id=product_id)
+        related_products = Product.objects.filter(category=product_details.category).exclude(id=product_id)[:8]
+    except Exception as e:
+        # If there's any database error, return 404
+        from django.http import Http404
+        raise Http404("Product not found")
+    
     context = {
         'product': product_details,
         'related_products': related_products
