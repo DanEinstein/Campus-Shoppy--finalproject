@@ -18,12 +18,14 @@ from django.urls import path, include
 from . import views
 from . import settings
 from django.conf.urls.static import static
+from .health import health_check
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home_view, name='home'),
     path('home/', views.home_view, name='home'),
+    path('health/', health_check, name='health'),
     path('blog/', include('blog.urls')),
     path('contact/', include('contact.urls')),
     path('about/', include('about.urls')),
