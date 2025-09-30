@@ -40,6 +40,23 @@ def fix_database():
         else:
             print("'updated' column already exists")
     
+    # Check shop_product table for featured column
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='shop_product'")
+        if cursor.fetchone():
+            cursor.execute("PRAGMA table_info(shop_product)")
+            columns = [row[1] for row in cursor.fetchall()]
+            
+            if 'featured' not in columns:
+                print("Adding missing 'featured' column to shop_product...")
+                try:
+                    cursor.execute("ALTER TABLE shop_product ADD COLUMN featured BOOLEAN DEFAULT 0")
+                    print("Successfully added 'featured' column")
+                except Exception as e:
+                    print(f"Error adding featured column: {e}")
+            else:
+                print("'featured' column already exists in shop_product")
+    
     # Run all migrations to ensure everything is up to date
     print("Running migrations...")
     call_command('migrate', verbosity=0)
