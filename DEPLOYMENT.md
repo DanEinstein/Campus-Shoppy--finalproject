@@ -53,7 +53,7 @@ git push -u origin main
 
 ### 2. Configure Service
 - **Name**: `campus-shoppy`
-- **Environment**: `Python 3`
+- **Environment**: `Python 3.11`
 - **Region**: Choose closest to Kenya
 - **Branch**: `main`
 - **Root Directory**: Leave empty
