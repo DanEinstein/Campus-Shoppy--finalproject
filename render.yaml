@@ -4,13 +4,15 @@ services:
     env: python
     plan: free
     buildCommand: |
+      echo "Starting build with pip..."
       pip install --upgrade pip
       pip install -r requirements.txt
       python manage.py migrate
       python manage.py collectstatic --noinput
+      echo "Build completed successfully!"
     startCommand: gunicorn django_ecommerce.wsgi:application --bind 0.0.0.0:$PORT
     pythonVersion: 3.11.10
-    poetryVersion: none
+    poetryVersion: "none"
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true
