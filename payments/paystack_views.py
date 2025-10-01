@@ -207,6 +207,10 @@ def paystack_success(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     payment = get_object_or_404(Payment, order=order)
     
+    # Clear the cart after successful payment
+    cart = Cart(request)
+    cart.clear()
+    
     return render(request, 'payments/paystack_success.html', {
         'order': order,
         'payment': payment
@@ -218,6 +222,11 @@ def paystack_status(request, order_id):
     """Check payment status"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
     payment = get_object_or_404(Payment, order=order)
+    
+    # If payment is successful, clear the cart
+    if payment.status == 'success':
+        cart = Cart(request)
+        cart.clear()
     
     return render(request, 'payments/paystack_status.html', {
         'order': order,
