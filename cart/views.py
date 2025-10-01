@@ -155,7 +155,7 @@ def checkout(request):
                     )
                 # Defer inventory decrement to payment success callback
                 # keep cart until payment initiated, then clear
-            return redirect(reverse('payments:initiate', args=[order.id]))
+            return redirect(reverse('payments:paystack_initiate', args=[order.id]))
     else:
         form = OrderCreateForm()
     return render(request, 'cart/checkout_mobile.html', {'cart': cart, 'cart_items': cart_items, 'form': form})

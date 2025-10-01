@@ -1,0 +1,105 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Payment Status - Campus Shoppy{% endblock %}
+
+{% block content %}
+<div class="container mt-3 mt-md-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Status</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <h5>Order #{{ order.id }}</h5>
+                        <p class="text-muted">Amount: <strong class="text-primary">₦{{ order.total_amount }}</strong></p>
+                    </div>
+                    
+                    {% if payment.status == 'success' %}
+                        <div class="alert alert-success border-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-check-circle fa-2x me-3 text-success"></i>
+                                <div>
+                                    <h5 class="mb-1">Payment Successful!</h5>
+                                    <p class="mb-0">Your payment has been processed successfully.</p>
+                                    {% if payment.paystack_reference %}
+                                        <p class="mb-0 mt-2"><strong>Reference:</strong> {{ payment.paystack_reference }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a href="{% url 'payments:paystack_success' order.id %}" class="btn btn-success btn-lg">
+                                <i class="fas fa-check-circle"></i> View Order Confirmation
+                            </a>
+                            <a href="{% url 'shop:shop' %}" class="btn btn-outline-primary btn-lg ms-2">
+                                <i class="fas fa-shopping-cart"></i> Continue Shopping
+                            </a>
+                        </div>
+                        
+                    {% elif payment.status == 'pending' %}
+                        <div class="alert alert-info border-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-clock fa-2x me-3 text-info"></i>
+                                <div>
+                                    <h5 class="mb-1">Payment Pending</h5>
+                                    <p class="mb-0">Please complete the payment process.</p>
+                                    <p class="mb-0 mt-2">If you haven't completed the payment, you can try again.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'payments:paystack_initiate' order.id %}" class="btn btn-primary">
+                                <i class="fas fa-credit-card"></i> Try Payment Again
+                            </a>
+                            <a href="{% url 'payments:paystack_status' order.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-sync"></i> Refresh Status
+                            </a>
+                        </div>
+                        
+                    {% elif payment.status == 'failed' %}
+                        <div class="alert alert-danger border-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-times-circle fa-2x me-3 text-danger"></i>
+                                <div>
+                                    <h5 class="mb-1">Payment Failed</h5>
+                                    <p class="mb-0">{{ payment.result_desc|default:"Payment could not be processed." }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'payments:paystack_initiate' order.id %}" class="btn btn-primary">
+                                <i class="fas fa-redo"></i> Try Again
+                            </a>
+                            <a href="{% url 'cart:cart_detail' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-shopping-cart"></i> Back to Cart
+                            </a>
+                        </div>
+                        
+                    {% else %}
+                        <div class="alert alert-warning border-0">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-exclamation-triangle fa-2x me-3 text-warning"></i>
+                                <div>
+                                    <h5 class="mb-1">Payment Status Unknown</h5>
+                                    <p class="mb-0">Unable to determine payment status.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'payments:paystack_initiate' order.id %}" class="btn btn-primary">
+                                <i class="fas fa-credit-card"></i> Make Payment
+                            </a>
+                            <a href="{% url 'payments:paystack_status' order.id %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-sync"></i> Refresh
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
