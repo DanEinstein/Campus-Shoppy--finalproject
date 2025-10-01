@@ -9,21 +9,44 @@
           action="{% url 'signin' %}"
           method="post"
         >
-          {% csrf_token %} {% block user_form %}
+          {% csrf_token %}
+          
+          <!-- Display messages -->
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
 
-          <div class="form-group">username:{{ form.username }}</div>
-          <div class="form-group">password:{{ form.password }}</div>
           <div class="form-group">
-            Don't have any account? Create one
-            <a href="{% url 'signup' %}">here</a>.
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="text-danger small">{{ form.username.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="text-danger small">{{ form.password.errors.0 }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            Don't have an account? Create one
+            <a href="{% url 'account:signup' %}">here</a>.
+          </div>
+          
+          <div class="form-group">
             <input
               type="submit"
               value="Sign In"
               class="btn btn-primary py-3 px-5"
             />
           </div>
-
-          {% endblock %}
         </form>
       </div>
       <div class="col-md-6 d-flex">
