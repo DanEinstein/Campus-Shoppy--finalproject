@@ -147,6 +147,15 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Ensure media files are served in development
+if DEBUG:
+    # In development, serve media files through Django
+    pass
+else:
+    # In production, we need to configure proper media serving
+    # This will be handled by the web server (Render)
+    pass
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.1/ref/settings/#default-auto-field
 

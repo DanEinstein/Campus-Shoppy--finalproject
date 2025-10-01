@@ -38,6 +38,7 @@
             ><img
               class="img-fluid"
               src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+              onerror="this.src='{% static 'images/product-1.jpg' %}'"
               alt="{{ product.name }}"
             />
             <div class="overlay"></div>

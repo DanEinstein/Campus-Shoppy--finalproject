@@ -11,6 +11,7 @@
         <a href="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" class="image-popup">
           <img
             src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+            onerror="this.src='{% static 'images/product-1.jpg' %}'"
             class="img-fluid"
             alt="{{ product.name }}"
           />
@@ -114,6 +115,7 @@
             <img
               class="img-fluid"
               src="{% if rel_product.photo %}{{ rel_product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+              onerror="this.src='{% static 'images/product-1.jpg' %}'"
               alt="{{ rel_product.name }}"
             />
             <span class="status">30%</span>

@@ -118,3 +118,34 @@ def test_image_upload(request):
         'media_root': str(settings.MEDIA_ROOT)
     })
 
+
+def debug_media_files(request):
+    """Debug view to check media file serving"""
+    import os
+    from django.conf import settings
+    
+    # Check if media directory exists
+    media_exists = os.path.exists(settings.MEDIA_ROOT)
+    
+    # Get list of files in media directory
+    media_files = []
+    if media_exists:
+        for root, dirs, files in os.walk(settings.MEDIA_ROOT):
+            for file in files:
+                rel_path = os.path.relpath(os.path.join(root, file), settings.MEDIA_ROOT)
+                media_files.append({
+                    'name': file,
+                    'path': rel_path,
+                    'full_path': os.path.join(root, file),
+                    'url': f"{settings.MEDIA_URL}{rel_path.replace(os.sep, '/')}"
+                })
+    
+    return JsonResponse({
+        'media_url': settings.MEDIA_URL,
+        'media_root': str(settings.MEDIA_ROOT),
+        'media_exists': media_exists,
+        'debug': settings.DEBUG,
+        'files': media_files[:10],  # Limit to first 10 files
+        'total_files': len(media_files)
+    })
+
