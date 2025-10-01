@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import JsonResponse
 from .models import Category, Product, Wishlist
 from django.contrib.auth.decorators import login_required
 
@@ -66,4 +67,24 @@ def remove_from_wishlist(request, item_id):
     wishlist_item = get_object_or_404(Wishlist, id=item_id, user=request.user)
     wishlist_item.delete()
     return redirect('shop:wishlist')
+
+
+def debug_images(request):
+    """Debug view to check product images"""
+    products = Product.objects.all()[:5]  # Get first 5 products
+    debug_data = []
+    
+    for product in products:
+        debug_data.append({
+            'id': product.id,
+            'name': product.name,
+            'has_photo': bool(product.photo),
+            'photo_url': product.photo.url if product.photo else None,
+            'photo_name': product.photo.name if product.photo else None,
+        })
+    
+    return JsonResponse({
+        'products': debug_data,
+        'total_products': Product.objects.count()
+    })
 

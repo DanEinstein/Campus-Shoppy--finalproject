@@ -37,7 +37,7 @@
           <a href="{% url 'shop:product-details' product.id %}" class="img-prod"
             ><img
               class="img-fluid"
-              src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+              src="{% if product.photo and product.photo.url %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
               alt="{{ product.name }}"
             />
             <div class="overlay"></div>

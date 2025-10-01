@@ -63,6 +63,7 @@ class PaystackInitializeView(View):
         print(f"DEBUG: PAYSTACK_SECRET_KEY starts with: {settings.PAYSTACK_SECRET_KEY[:10]}...")
         print(f"DEBUG: PAYSTACK_PUBLIC_KEY starts with: {settings.PAYSTACK_PUBLIC_KEY[:10]}...")
         print(f"DEBUG: PAYSTACK_CALLBACK_URL: {settings.PAYSTACK_CALLBACK_URL}")
+        print(f"DEBUG: Order ID: {order.id}, Amount: {order.total_amount}")
         
         try:
             # Initialize Paystack payment
@@ -74,11 +75,15 @@ class PaystackInitializeView(View):
             # Convert amount to cents (Paystack uses cents for KES)
             amount_in_cents = int(float(order.total_amount) * 100)
             
+            # Generate unique reference with timestamp to avoid duplicates
+            import time
+            unique_reference = f'CAMPUS-SHOPPY-{order.id}-{int(time.time())}'
+            
             payload = {
                 'email': request.user.email,
                 'amount': amount_in_cents,
                 'currency': 'KES',  # Kenyan Shilling
-                'reference': f'CAMPUS-SHOPPY-{order.id}',
+                'reference': unique_reference,
                 'callback_url': settings.PAYSTACK_CALLBACK_URL,
                 'metadata': {
                     'order_id': order.id,
