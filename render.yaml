@@ -3,31 +3,18 @@ services:
     name: campus-shoppy
     env: python
     plan: free
-    pythonVersion: 3.11.10
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: chmod +x start.sh && ./start.sh
+    buildCommand: pip install -r requirements.txt && python manage.py migrate
+    startCommand: python manage.py runserver 0.0.0.0:$PORT
     envVars:
       - key: DJANGO_SECRET_KEY
-        sync: false
-      - key: DJANGO_DEBUG
+        generateValue: true
+      - key: DEBUG
         value: False
-      - key: DJANGO_ALLOWED_HOSTS
-        value: *.onrender.com,campus-shoppy-maseno-7y1e.onrender.com
-      - key: MPESA_CONSUMER_KEY
+      - key: ALLOWED_HOSTS
+        value: campus-shoppy-maseno-7y1e.onrender.com,*.onrender.com
+      - key: PAYSTACK_SECRET_KEY
         sync: false
-      - key: MPESA_CONSUMER_SECRET
+      - key: PAYSTACK_PUBLIC_KEY
         sync: false
-      - key: MPESA_SHORTCODE
-        sync: false
-      - key: MPESA_PASSKEY
-        sync: false
-      - key: MPESA_BASE_URL
-        value: https://sandbox.safaricom.co.ke
-      - key: MPESA_CALLBACK_URL
-        value: https://campus-shoppy-maseno-7y1e.onrender.com/payments/callback/
-      - key: DB_ENGINE
-        value: django.db.backends.sqlite3
-      - key: DB_NAME
-        value: db.sqlite3
-      - key: PORT
-        value: 10000
+      - key: PAYSTACK_CALLBACK_URL
+        value: https://campus-shoppy-maseno-7y1e.onrender.com/payments/paystack/callback/
