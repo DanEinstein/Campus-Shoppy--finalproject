@@ -1,2 +1,2 @@
-web: gunicorn django_ecommerce.wsgi --log-file -
+web: gunicorn django_ecommerce.wsgi:application --bind 0.0.0.0:$PORT
 
