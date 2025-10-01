@@ -1,77 +1,123 @@
 # 🏫 Campus Shoppy - E-commerce Platform
 
-A comprehensive e-commerce platform built for Maseno University students, featuring a modern carousel, secure payments, and mobile-optimized design.
+A comprehensive, production-ready e-commerce platform built specifically for Maseno University students. Features modern design, secure payment processing, and mobile-optimized shopping experience.
 
-## ✨ Features
+## 🌟 **Live Demo**
+**🚀 [Visit Campus Shoppy](https://campus-shoppy-maseno-7y1e.onrender.com/)**
 
-### 🎠 **Working Carousel**
-- ✅ **Auto-advancing slides** with 5-second intervals
+## ✨ **Key Features**
+
+### 🎠 **Modern Homepage**
+- ✅ **Auto-advancing carousel** with 5-second intervals
 - ✅ **Touch/swipe support** for mobile devices
 - ✅ **Navigation controls** (arrows and dots)
 - ✅ **Responsive design** for all screen sizes
-- ✅ **No scroll interference** on mobile
+- ✅ **Multiple homepage templates** (beautiful, minimal, mobile-optimized)
 
-### 💳 **Payment System**
-- ✅ **M-Pesa integration** for Kenyan payments
-- ✅ **Secure payment processing** with callback handling
-- ✅ **Payment verification** and status tracking
-- ✅ **Manual payment confirmation** as fallback
-- ✅ **Order management** with payment status
+### 💳 **Payment Integration**
+- ✅ **Paystack (Primary)**: Live payment processing with Kenyan Shilling (KES)
+- ✅ **M-Pesa (Fallback)**: STK Push integration for mobile payments
+- ✅ **Multiple Payment Methods**: Cards, Bank transfers, USSD, etc.
+- ✅ **Secure Processing**: PCI DSS compliant payment handling
+- ✅ **Real-time Verification**: Webhook-based payment confirmation
+- ✅ **Cart Auto-Clear**: Automatic cart clearing on successful payment
 
-### 🛒 **Shopping Cart**
-- ✅ **Add/remove products** from cart
-- ✅ **Quantity management** with real-time updates
-- ✅ **Session-based cart** for non-logged users
-- ✅ **User-specific cart** for logged-in users
-- ✅ **Checkout process** with order creation
+### 🛒 **E-commerce Functionality**
+- ✅ **Product Management**: Full CRUD operations for products
+- ✅ **Category System**: Organized product categorization
+- ✅ **Shopping Cart**: Session-based cart with real-time updates
+- ✅ **Wishlist**: Save favorite products for later
+- ✅ **Product Search**: Find products easily
+- ✅ **Order Management**: Complete order tracking system
+
+### 👤 **User Management**
+- ✅ **User Registration**: Seamless account creation with auto-login
+- ✅ **Authentication**: Secure login/logout with proper redirects
+- ✅ **User Profiles**: Personalized shopping experience
+- ✅ **Session Management**: Persistent cart across sessions
+
+### 📝 **Content Management**
+- ✅ **Blog System**: Full blog with categories and tags
+- ✅ **About Page**: Comprehensive platform information
+- ✅ **Contact Forms**: User communication system
+- ✅ **Newsletter**: Email subscription functionality
 
 ### 📱 **Mobile Optimization**
-- ✅ **Responsive design** for all devices
-- ✅ **Touch-friendly interface** with proper spacing
-- ✅ **Mobile carousel** with swipe gestures
-- ✅ **Optimized navigation** for small screens
-- ✅ **Fast loading** with optimized assets
+- ✅ **Responsive Design**: Mobile-first approach
+- ✅ **Touch-Friendly Interface**: Optimized for touch interactions
+- ✅ **Fast Loading**: Optimized assets and performance
+- ✅ **Cross-Device Compatibility**: Works on all devices
 
-## 🚀 Quick Start
+## 🛠️ **Technology Stack**
 
-### **1. Install Dependencies**
+### **Backend**
+- **Django 3.1.14**: Python web framework
+- **SQLite**: Development database (PostgreSQL ready for production)
+- **Django ORM**: Database abstraction layer
+- **Django REST Framework**: API development ready
+
+### **Frontend**
+- **Bootstrap 5**: Responsive CSS framework
+- **JavaScript**: Interactive carousel and cart functionality
+- **HTML5/CSS3**: Modern web standards
+- **Font Awesome**: Icon library
+
+### **Payment Processing**
+- **Paystack**: Primary payment gateway (Live integration)
+- **M-Pesa Daraja API**: Mobile payment integration
+- **Webhook Handling**: Real-time payment verification
+
+### **Deployment**
+- **Render.com**: Cloud hosting platform
+- **Gunicorn**: WSGI HTTP server
+- **WhiteNoise**: Static file serving
+- **Environment Variables**: Secure configuration
+
+## 🚀 **Quick Start**
+
+### **1. Clone Repository**
+```bash
+git clone https://github.com/DanEinstein/Campus-Shoppy--finalproject.git
+cd Campus-Shoppy--finalproject
+```
+
+### **2. Install Dependencies**
 ```bash
 pip install -r requirements.txt
 ```
 
-### **2. Setup Database**
+### **3. Setup Database**
 ```bash
 python manage.py migrate
 python manage.py collectstatic
 ```
 
-### **3. Create Superuser**
+### **4. Create Superuser**
 ```bash
 python manage.py createsuperuser
 ```
 
-### **4. Run Server**
+### **5. Run Development Server**
 ```bash
-# Use the stable server script
-python start_server.py
-
-# Or use the batch file
-run_server_stable.bat
-
-# Or manual command
-python manage.py runserver 127.0.0.1:8000 --noreload --insecure
+python manage.py runserver
 ```
 
-## 🔧 Configuration
+## 🔧 **Configuration**
 
 ### **Environment Variables**
 Create a `.env` file with:
 ```env
+# Django Configuration
 DJANGO_SECRET_KEY=your-secret-key
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1,*.onrender.com
 
-# M-Pesa Configuration
+# Paystack Configuration (Primary)
+PAYSTACK_SECRET_KEY=your-paystack-secret-key
+PAYSTACK_PUBLIC_KEY=your-paystack-public-key
+PAYSTACK_CALLBACK_URL=https://your-domain.com/payments/paystack/callback/
+
+# M-Pesa Configuration (Fallback)
 MPESA_CONSUMER_KEY=your-consumer-key
 MPESA_CONSUMER_SECRET=your-consumer-secret
 MPESA_SHORTCODE=your-shortcode
@@ -80,121 +126,181 @@ MPESA_BASE_URL=https://sandbox.safaricom.co.ke
 MPESA_CALLBACK_URL=https://your-domain.com/payments/callback/
 ```
 
-## 📁 Project Structure
+## 📁 **Project Structure**
 
 ```
 Campus Shoppy/
 ├── django_ecommerce/          # Main Django project
+│   ├── settings.py           # Project configuration
+│   ├── urls.py               # Main URL routing
+│   └── wsgi.py               # WSGI configuration
 ├── templates/                 # HTML templates
 │   ├── home.html             # Main homepage with carousel
 │   ├── base/                 # Base templates
-│   └── payments/             # Payment templates
+│   ├── shop/                 # Product templates
+│   ├── cart/                 # Shopping cart templates
+│   ├── payments/             # Payment templates
+│   ├── account/              # Authentication templates
+│   ├── blog/                 # Blog templates
+│   └── contact/              # Contact templates
 ├── static/                   # Static files (CSS, JS, images)
-├── shop/                     # Product management
+│   ├── css/                  # Custom stylesheets
+│   ├── js/                   # JavaScript files
+│   └── images/               # Image assets
+├── shop/                     # Product management app
+│   ├── models.py             # Product and Category models
+│   ├── views.py              # Product views
+│   └── urls.py               # Shop URL patterns
 ├── cart/                     # Shopping cart functionality
-├── payments/                 # M-Pesa payment integration
+│   ├── models.py             # Order and OrderItem models
+│   ├── views.py              # Cart views
+│   └── cart.py               # Cart session management
+├── payments/                 # Payment integration
+│   ├── models.py             # Payment model
+│   ├── views.py              # M-Pesa payment views
+│   └── paystack_views.py     # Paystack payment views
 ├── account/                  # User authentication
+│   ├── models.py             # User models
+│   ├── views.py              # Authentication views
+│   └── forms.py              # Custom forms
 ├── blog/                     # Blog system
+│   ├── models.py             # Blog models
+│   └── views.py              # Blog views
 ├── contact/                  # Contact forms
-└── about/                    # About page
+├── about/                    # About page
+├── requirements.txt          # Python dependencies
+├── render.yaml              # Render deployment config
+├── Procfile                 # Process configuration
+└── runtime.txt              # Python version
 ```
 
-## 🎯 Key Components
+## 🎯 **Key Components**
 
-### **Carousel Implementation**
+### **Homepage Carousel**
 - **HTML**: Clean structure with inline styles for reliability
 - **JavaScript**: Simple, conflict-free carousel logic
 - **CSS**: Responsive design with mobile optimization
 - **Touch Support**: Swipe gestures for mobile navigation
+- **Auto-advance**: 5-second intervals with pause on hover
 
 ### **Payment System**
+- **Paystack Integration**: Live payment processing with KES currency
 - **M-Pesa STK Push**: Direct mobile payment integration
-- **Callback Handling**: Automatic payment confirmation
+- **Webhook Handling**: Real-time payment verification
 - **Manual Verification**: Fallback for API issues
 - **Order Tracking**: Complete payment status management
 
-### **Cart System**
+### **Shopping Cart**
 - **Session Management**: Persistent cart across sessions
 - **User Integration**: User-specific cart for logged-in users
 - **Real-time Updates**: Dynamic cart updates without page refresh
 - **Checkout Process**: Seamless order creation and payment
+- **Cart Clearing**: Automatic cart clearing on successful payment
 
-## 🚀 Deployment
+## 🚀 **Deployment**
 
-### **Render.com Deployment**
-1. **Connect Repository**: Link your GitHub repository
-2. **Set Environment Variables**: Add all required environment variables
-3. **Build Command**: `pip install -r requirements.txt`
-4. **Start Command**: `gunicorn django_ecommerce.wsgi:application`
-5. **Static Files**: Run `python manage.py collectstatic`
+### **Render.com Deployment (Current)**
+The application is currently deployed on Render.com with the following configuration:
 
-### **Environment Variables for Production**
+1. **Repository**: Connected to GitHub repository
+2. **Environment Variables**: Configured for production
+3. **Build Command**: `pip install --upgrade pip && pip install -r requirements.txt && python manage.py migrate`
+4. **Start Command**: `gunicorn django_ecommerce.wsgi:application --bind 0.0.0.0:$PORT`
+5. **Static Files**: Handled by WhiteNoise middleware
+
+### **Production Environment Variables**
 ```env
 DJANGO_DEBUG=False
 DJANGO_SECRET_KEY=your-production-secret-key
-DJANGO_ALLOWED_HOSTS=your-domain.com,*.onrender.com
-MPESA_BASE_URL=https://api.safaricom.co.ke
-MPESA_CALLBACK_URL=https://your-domain.com/payments/callback/
+DJANGO_ALLOWED_HOSTS=campus-shoppy-maseno-7y1e.onrender.com,*.onrender.com
+PAYSTACK_SECRET_KEY=your-paystack-secret-key
+PAYSTACK_PUBLIC_KEY=your-paystack-public-key
+PAYSTACK_CALLBACK_URL=https://campus-shoppy-maseno-7y1e.onrender.com/payments/paystack/callback/
 ```
 
-## 🔍 Testing
+## 🔍 **Testing**
 
-### **Test Carousel**
-1. Visit homepage - carousel should display immediately
-2. Test navigation arrows and dots
-3. Test auto-advance (5-second intervals)
-4. Test mobile swipe gestures
+### **Live Testing**
+1. **Visit Homepage**: [https://campus-shoppy-maseno-7y1e.onrender.com/](https://campus-shoppy-maseno-7y1e.onrender.com/)
+2. **Test Carousel**: Auto-advancing slides with navigation
+3. **Test Mobile**: Swipe gestures and responsive design
+4. **Test Payments**: Complete checkout process with Paystack
+5. **Test Cart**: Add/remove products and checkout flow
 
-### **Test Payments**
-1. Add products to cart
-2. Proceed to checkout
-3. Enter phone number for M-Pesa
-4. Complete payment process
-5. Verify payment status
+### **Local Testing**
+```bash
+# Run development server
+python manage.py runserver
 
-### **Test Mobile**
-1. Open on mobile device
-2. Test carousel swipe gestures
-3. Test navigation and forms
-4. Verify responsive design
+# Test carousel functionality
+# Test payment integration
+# Test mobile responsiveness
+```
 
-## 🛠️ Troubleshooting
+## 🛠️ **Troubleshooting**
 
-### **Carousel Not Displaying**
-- Check browser console for JavaScript errors
-- Verify images exist in `static/images/`
-- Run `python manage.py collectstatic`
-- Try the backup simple carousel implementation
+### **Common Issues**
+- **Carousel Not Displaying**: Check browser console for JavaScript errors
+- **Payment Issues**: Verify Paystack credentials in environment variables
+- **Database Issues**: Run `python manage.py migrate`
+- **Static Files**: Run `python manage.py collectstatic`
 
-### **Payment Issues**
-- Verify M-Pesa credentials in environment variables
-- Check callback URL is accessible
-- Test with sandbox credentials first
-- Use manual verification as fallback
+### **Development Issues**
+- **Import Errors**: Ensure all dependencies are installed
+- **URL Errors**: Check URL patterns and namespacing
+- **Template Errors**: Verify template inheritance and context variables
 
-### **Database Issues**
-- Run `python manage.py migrate`
-- Check database connection
-- Verify all models are properly defined
-- Run `python manage.py makemigrations` if needed
+## 📊 **Performance Metrics**
 
-## 📞 Support
+### **Technical Performance**
+- ✅ **Fast Loading**: Optimized static files and database queries
+- ✅ **Mobile Performance**: Touch-optimized interactions
+- ✅ **Cross-Browser**: Compatible with major browsers
+- ✅ **Responsive**: Works on all device sizes
 
-For issues or questions:
-1. Check the troubleshooting section above
-2. Review the deployment checklist
-3. Verify all environment variables are set
-4. Test with the stable server scripts provided
+### **Business Metrics**
+- ✅ **Conversion Ready**: Complete checkout flow
+- ✅ **Payment Success**: Multiple payment methods
+- ✅ **User Retention**: Account system and wishlist
+- ✅ **Mobile Commerce**: Mobile-optimized experience
 
-## 🎉 Success Indicators
+## 🎯 **Key Achievements**
+
+1. **🎓 Student-Focused**: Designed specifically for Maseno University students
+2. **💳 Payment Ready**: Live Paystack integration with KES currency
+3. **📱 Mobile-First**: Optimized for mobile commerce
+4. **🔒 Secure**: Proper security measures and credential management
+5. **🚀 Production Ready**: Fully deployed and functional
+6. **🎨 Professional**: Modern, clean design
+7. **⚡ Fast**: Optimized performance and loading
+
+## 🎉 **Success Indicators**
 
 When everything is working correctly, you should see:
 - ✅ **Carousel displays immediately** on homepage
 - ✅ **Smooth slide transitions** with auto-advance
 - ✅ **Working navigation** (arrows, dots, swipe)
 - ✅ **Mobile-optimized** carousel and navigation
-- ✅ **Payment system** processes M-Pesa payments
+- ✅ **Payment system** processes payments successfully
 - ✅ **Cart functionality** adds/removes products
 - ✅ **Responsive design** works on all devices
 
-The platform is now ready for deployment and production use! 🚀
+## 📞 **Support & Contributing**
+
+### **Issues & Questions**
+1. Check the troubleshooting section above
+2. Review the deployment checklist
+3. Verify all environment variables are set
+4. Test with the stable server scripts provided
+
+### **Contributing**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
+
+## 🏆 **Project Status**
+
+**✅ PRODUCTION READY** - The Campus Shoppy platform is fully functional, deployed, and ready for business! 🚀
+
+**Live Demo**: [https://campus-shoppy-maseno-7y1e.onrender.com/](https://campus-shoppy-maseno-7y1e.onrender.com/)
