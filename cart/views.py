@@ -16,6 +16,7 @@ def add_to_cart(request, product_id):
     """
     cart = Cart(request)
     product = get_object_or_404(Product, id=product_id)
+    
     # Handle POST with form; otherwise allow GET to add a single item
     if request.method == 'POST':
         form = CartAddProductForm(request.POST)
@@ -36,27 +37,30 @@ def add_to_cart(request, product_id):
         # GET request: add one unit, no update
         quantity = 1
         update_flag = False
-        # enforce inventory limit
-        if product.inventory <= 0:
-            messages.error(request, 'This product is out of stock.')
+    
+    # enforce inventory limit
+    if product.inventory <= 0:
+        messages.error(request, 'This product is out of stock.')
+        return redirect('cart:cart_detail')
+    
+    if not update_flag:
+        # adding to existing quantity
+        current_qty = 0
+        product_id_str = str(product.id)
+        if product_id_str in cart.cart:
+            current_qty = cart.cart[product_id_str]['quantity']
+        if current_qty + quantity > product.inventory:
+            messages.error(request, 'Requested quantity exceeds available stock.')
             return redirect('cart:cart_detail')
-        if not update_flag:
-            # adding to existing quantity
-            current_qty = 0
-            product_id_str = str(product.id)
-            if product_id_str in cart.cart:
-                current_qty = cart.cart[product_id_str]['quantity']
-            if current_qty + quantity > product.inventory:
-                messages.error(request, 'Requested quantity exceeds available stock.')
-                return redirect('cart:cart_detail')
-        else:
-            # direct set
-            if quantity > product.inventory:
-                messages.error(request, 'Requested quantity exceeds available stock.')
-                return redirect('cart:cart_detail')
-        cart.add(product=product,
-                 quantity=quantity,
-                 update_quantity=update_flag)
+    else:
+        # direct set
+        if quantity > product.inventory:
+            messages.error(request, 'Requested quantity exceeds available stock.')
+            return redirect('cart:cart_detail')
+    
+    # Add to cart
+    cart.add(product=product, quantity=quantity, update_quantity=update_flag)
+    messages.success(request, f'{product.name} added to cart successfully!')
     return redirect('cart:cart_detail')
 
 

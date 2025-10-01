@@ -53,13 +53,16 @@ class Cart(object):
         products = Product.objects.filter(id__in=product_ids)
         product_map = {str(p.id): p for p in products}
         
-        for item in self.cart.values():
-            # Create a copy of the item to avoid modifying the session data
-            item_copy = item.copy()
-            # Keep prices as strings/floats for JSON serialization
-            item_copy['price'] = float(item_copy['price'])
-            item_copy['total_price'] = float(item_copy['price']) * item_copy['quantity']
-            yield item_copy
+        for product_id, item in self.cart.items():
+            product = product_map.get(product_id)
+            if product:
+                # Create a copy of the item to avoid modifying the session data
+                item_copy = item.copy()
+                # Keep prices as strings/floats for JSON serialization
+                item_copy['price'] = float(item_copy['price'])
+                item_copy['total_price'] = float(item_copy['price']) * item_copy['quantity']
+                item_copy['product'] = product
+                yield item_copy
 
     def __len__(self):
         """

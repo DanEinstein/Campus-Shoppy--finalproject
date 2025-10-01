@@ -204,11 +204,15 @@
                      class="add-to-cart d-flex justify-content-center align-items-center text-center">
                     <span><i class="ion-ios-menu"></i></span>
                   </a>
-                  <a href="{% url 'cart:add_to_cart' product.id %}" 
-                     class="buy-now d-flex justify-content-center align-items-center mx-1">
-                    <span><i class="ion-ios-cart"></i></span>
-                  </a>
-                  <a href="#" class="heart d-flex justify-content-center align-items-center">
+                  <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="d-inline">
+                      {% csrf_token %}
+                      <input type="hidden" name="quantity" value="1">
+                      <input type="hidden" name="update" value="False">
+                      <button type="submit" class="buy-now d-flex justify-content-center align-items-center mx-1">
+                        <span><i class="ion-ios-cart"></i></span>
+                      </button>
+                  </form>
+                  <a href="{% url 'shop:add_to_wishlist' product.id %}" class="heart d-flex justify-content-center align-items-center">
                     <span><i class="ion-ios-heart"></i></span>
                   </a>
                 </div>
