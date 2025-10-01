@@ -59,6 +59,11 @@ class PaystackInitializeView(View):
                 'message': 'Paystack credentials not configured. Please set PAYSTACK_SECRET_KEY environment variable.'
             })
         
+        # Debug: Log the secret key (first 10 characters only for security)
+        print(f"DEBUG: PAYSTACK_SECRET_KEY starts with: {settings.PAYSTACK_SECRET_KEY[:10]}...")
+        print(f"DEBUG: PAYSTACK_PUBLIC_KEY starts with: {settings.PAYSTACK_PUBLIC_KEY[:10]}...")
+        print(f"DEBUG: PAYSTACK_CALLBACK_URL: {settings.PAYSTACK_CALLBACK_URL}")
+        
         try:
             # Initialize Paystack payment
             headers = {
@@ -95,6 +100,9 @@ class PaystackInitializeView(View):
                 timeout=30
             )
             
+            print(f"DEBUG: Paystack API Response Status: {response.status_code}")
+            print(f"DEBUG: Paystack API Response: {response.text}")
+            
             if response.status_code == 200:
                 data = response.json()
                 if data.get('status'):
@@ -119,7 +127,7 @@ class PaystackInitializeView(View):
             else:
                 return JsonResponse({
                     'status': 'error',
-                    'message': 'Payment initialization failed'
+                    'message': f'Payment initialization failed. Status: {response.status_code}, Response: {response.text}'
                 })
                 
         except Exception as e:
