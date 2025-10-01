@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %} {% load static %} {% block content %} {% include
 'includes/hero.html' with title='Product Single' breadcrumbs='
 <span class="mr-2"><a href="{% url 'home' %}">Home</a></span>
-<span class="mr-2"><a href="{% url 'shop' %}">Product</a></span>
+<span class="mr-2"><a href="{% url 'shop:shop' %}">Product</a></span>
 <span>Product Single</span>' %}
 
 <section class="ftco-section">

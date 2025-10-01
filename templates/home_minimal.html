@@ -20,7 +20,7 @@
             <div class="hero-content text-center">
               <h1 class="hero-title">Welcome to Campus Shoppy</h1>
               <p class="hero-subtitle">We deliver to wherever you are Anytime, Anyplace</p>
-              <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">Shop Now</a>
+              <a href="{% url 'shop:shop' %}" class="btn btn-primary btn-lg">Shop Now</a>
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
             <div class="hero-content text-center">
               <h1 class="hero-title">100% Quality Goods</h1>
               <p class="hero-subtitle">We deliver quality products to wherever you are</p>
-              <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">Shop Now</a>
+              <a href="{% url 'shop:shop' %}" class="btn btn-primary btn-lg">Shop Now</a>
             </div>
           </div>
         </div>
@@ -97,7 +97,7 @@
     
     <div class="text-center">
       <p class="text-muted mb-4">Discover our amazing collection of products</p>
-      <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">
+      <a href="{% url 'shop:shop' %}" class="btn btn-primary btn-lg">
         <i class="fas fa-store"></i> Browse All Products
       </a>
     </div>
@@ -133,7 +133,7 @@
         <h2 class="mb-3">Ready to Start Shopping?</h2>
         <p class="lead mb-4">Join thousands of satisfied customers who trust Campus Shoppy for their shopping needs.</p>
         <div class="d-flex flex-column flex-md-row gap-3 justify-content-center">
-          <a href="{% url 'shop' %}" class="btn btn-light btn-lg">
+          <a href="{% url 'shop:shop' %}" class="btn btn-light btn-lg">
             <i class="fas fa-shopping-bag"></i> Start Shopping
           </a>
           <a href="{% url 'account:signup' %}" class="btn btn-outline-light btn-lg">

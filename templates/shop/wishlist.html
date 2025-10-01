@@ -22,7 +22,7 @@
               >
                 <td class="product-remove">
                   <a
-                    href="{% url 'remove_from_wishlist' item.id %}"
+                    href="{% url 'shop:remove_from_wishlist' item.id %}"
                     class="btn-remove"
                     aria-label="Remove {{ item.product.name }} from wishlist"
                   >
@@ -78,7 +78,7 @@
                   <h4 class="mb-3">Your Wishlist is Empty!</h4>
                   <p>
                     Start saving items you love by browsing our
-                    <a href="{% url 'shop' %}" class="text-primary">Shop</a>.
+                    <a href="{% url 'shop:shop' %}" class="text-primary">Shop</a>.
                   </p>
                 </td>
               </tr>

@@ -17,7 +17,7 @@
               We deliver to wherever you are Anytime, Anyplace. Create your account now!
             </h2>
             <p>
-              <a href="{% url 'shop' %}" class="btn btn-primary">View Details</a>
+              <a href="{% url 'shop:shop' %}" class="btn btn-primary">View Details</a>
               <a href="{% url 'account:signup' %}" class="btn btn-outline-primary">Create Account</a>
             </p>
           </div>
@@ -35,7 +35,7 @@
               We deliver quality products to wherever you are. Create your account now!
             </h2>
             <p>
-              <a href="{% url 'shop' %}" class="btn btn-primary">View Details</a>
+              <a href="{% url 'shop:shop' %}" class="btn btn-primary">View Details</a>
               <a href="{% url 'account:signup' %}" class="btn btn-outline-primary">Create Account</a>
             </p>
           </div>
@@ -125,7 +125,7 @@
               <div class="text text-center">
                 <h2>Shop Everything</h2>
                 <p>Get the best from the best</p>
-                <p><a href="{% url 'shop' %}" class="btn btn-primary">Shop now</a></p>
+                <p><a href="{% url 'shop:shop' %}" class="btn btn-primary">Shop now</a></p>
               </div>
             </div>
           </div>
@@ -133,13 +133,13 @@
             <div class="category-wrap ftco-animate img mb-4 d-flex align-items-end" 
                  style="background-image: url({% static 'images/shoe rack.webp' %})">
               <div class="text px-3 py-1">
-                <h2 class="mb-0"><a href="{% url 'shop' %}">Household Items</a></h2>
+                <h2 class="mb-0"><a href="{% url 'shop:shop' %}">Household Items</a></h2>
               </div>
             </div>
             <div class="category-wrap ftco-animate img d-flex align-items-end" 
                  style="background-image: url({% static 'images/Sayona woofers image.webp' %});">
               <div class="text px-3 py-1">
-                <h2 class="mb-0"><a href="{% url 'shop' %}">Sound Systems</a></h2>
+                <h2 class="mb-0"><a href="{% url 'shop:shop' %}">Sound Systems</a></h2>
               </div>
             </div>
           </div>
@@ -150,13 +150,13 @@
         <div class="category-wrap ftco-animate img mb-4 d-flex align-items-end" 
              style="background-image: url({% static 'images/samsung phone.jpg' %})">
           <div class="text px-3 py-1">
-            <h2 class="mb-0"><a href="{% url 'shop' %}">Phones</a></h2>
+            <h2 class="mb-0"><a href="{% url 'shop:shop' %}">Phones</a></h2>
           </div>
         </div>
         <div class="category-wrap ftco-animate img d-flex align-items-end" 
              style="background-image: url({% static 'images/kenyan watch.jpg' %})">
           <div class="text px-3 py-1">
-            <h2 class="mb-0"><a href="{% url 'shop' %}">Watches</a></h2>
+            <h2 class="mb-0"><a href="{% url 'shop:shop' %}">Watches</a></h2>
           </div>
         </div>
       </div>
@@ -222,7 +222,7 @@
           <div class="alert alert-info">
             <h4><i class="fas fa-info-circle"></i> Discover Our Products</h4>
             <p class="mb-3">Browse our amazing collection of quality products</p>
-            <a href="{% url 'shop' %}" class="btn btn-primary btn-lg">
+            <a href="{% url 'shop:shop' %}" class="btn btn-primary btn-lg">
               <i class="fas fa-store me-2"></i>Browse All Products
             </a>
           </div>
