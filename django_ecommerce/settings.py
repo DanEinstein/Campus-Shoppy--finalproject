@@ -27,7 +27,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0,campus-shoppy-maseno-7y1e.onrender.com').split(',')
 
 
 # Application definition
@@ -178,7 +178,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 # Paystack configuration via environment variables
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='')
-PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='https://campus-shoppy-maseno.onrender.com/payments/paystack/callback/')
+PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='https://campus-shoppy-maseno-7y1e.onrender.com/payments/paystack/callback/')
 
 # M-Pesa (Daraja) configuration via environment variables (kept for fallback)
 MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
@@ -188,7 +188,7 @@ MPESA_PASSKEY = config('MPESA_PASSKEY', default='')  # Sandbox passkey
 MPESA_BASE_URL = config('MPESA_BASE_URL', default='https://sandbox.safaricom.co.ke')
 # For local testing with ngrok, use: https://your-ngrok-url.ngrok.io/payments/callback/
 # For production, use: https://campus-shoppy-maseno.onrender.com/payments/callback/
-MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='https://campus-shoppy-maseno.onrender.com/payments/callback/')
+MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='https://campus-shoppy-maseno-7y1e.onrender.com/payments/callback/')
 
 # CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else []
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='https://campus-shoppy-maseno-7y1e.onrender.com').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else ['https://campus-shoppy-maseno-7y1e.onrender.com']
