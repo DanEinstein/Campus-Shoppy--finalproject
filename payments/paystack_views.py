@@ -74,8 +74,15 @@ class PaystackInitializeView(View):
             import random
             unique_reference = f'CAMPUS-SHOPPY-{order.id}-{int(time.time())}-{random.randint(1000, 9999)}'
             
+            # Ensure user has a valid email
+            user_email = request.user.email
+            if not user_email or user_email.strip() == '':
+                # Generate a temporary email if user doesn't have one
+                user_email = f'user{request.user.id}@campus-shoppy.com'
+                print(f"DEBUG: User {request.user.username} has no email, using fallback: {user_email}")
+            
             payload = {
-                'email': request.user.email,
+                'email': user_email,
                 'amount': amount_in_cents,
                 'currency': 'KES',  # Kenyan Shilling
                 'reference': unique_reference,
@@ -83,17 +90,25 @@ class PaystackInitializeView(View):
                 'metadata': {
                     'order_id': order.id,
                     'user_id': request.user.id,
+                    'username': request.user.username,
                     'custom_fields': [
                         {
                             'display_name': 'Order ID',
                             'variable_name': 'order_id',
                             'value': str(order.id)
+                        },
+                        {
+                            'display_name': 'Username',
+                            'variable_name': 'username',
+                            'value': request.user.username
                         }
                     ]
                 }
             }
             
             print(f"DEBUG: Paystack Request - Amount: {amount_in_cents}, Reference: {unique_reference}")
+            print(f"DEBUG: User Email: {user_email}, Username: {request.user.username}")
+            print(f"DEBUG: Payload Email: {payload['email']}")
             
             response = requests.post(
                 'https://api.paystack.co/transaction/initialize',
