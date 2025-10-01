@@ -14,7 +14,7 @@
     <ul class="categories">
       {% if categories %} {% for category in categories %}
       <li>
-        <a href="{% url 'post-by-category' category.name %}"
+        <a href="{% url 'blog:post-by-category' category.name %}"
           >{{ category.name }}<span style="color: #000"
             >({{ category.post_set.count }})</span
           ></a
