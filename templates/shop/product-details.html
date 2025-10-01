@@ -110,7 +110,7 @@
       {% for rel_product in related_products %}
       <div class="col-md-6 col-lg-3 ftco-animate">
         <div class="product">
-          <a href="{% url 'product-details' rel_product.id %}" class="img-prod">
+          <a href="{% url 'shop:product-details' rel_product.id %}" class="img-prod">
             <img
               class="img-fluid"
               src="{{ rel_product.photo.url }}"
@@ -121,7 +121,7 @@
           </a>
           <div class="text py-3 pb-4 px-3 text-center">
             <h3>
-              <a href="{% url 'product-details' rel_product.id %}"
+              <a href="{% url 'shop:product-details' rel_product.id %}"
                 >{{ rel_product.name }}</a
               >
             </h3>
@@ -157,7 +157,7 @@
                   </button>
                 </form>
                 <a
-                  href="{% url 'add_to_wishlist' rel_product.id %}"
+                  href="{% url 'shop:add_to_wishlist' rel_product.id %}"
                   class="heart d-flex justify-content-center align-items-center"
                 >
                   <span><i class="ion-ios-heart"></i></span>

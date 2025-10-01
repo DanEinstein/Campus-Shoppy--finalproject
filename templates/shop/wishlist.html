@@ -38,7 +38,7 @@
                 </td>
                 <td class="product-name text-left">
                   <h3>
-                    <a href="{% url 'product-details' item.product.id %}"
+                    <a href="{% url 'shop:product-details' item.product.id %}"
                       >{{ item.product.name|default:'[Product Name]' }}</a
                     >
                   </h3>

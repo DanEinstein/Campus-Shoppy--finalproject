@@ -51,14 +51,15 @@ class Cart(object):
         """
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)
-        cart = self.cart.copy()
-        for product in products:
-            cart[str(product.id)]['product'] = product
-
-        for item in cart.values():
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
-            yield item
+        product_map = {str(p.id): p for p in products}
+        
+        for item in self.cart.values():
+            # Create a copy of the item to avoid modifying the session data
+            item_copy = item.copy()
+            # Keep prices as strings/floats for JSON serialization
+            item_copy['price'] = float(item_copy['price'])
+            item_copy['total_price'] = float(item_copy['price']) * item_copy['quantity']
+            yield item_copy
 
     def __len__(self):
         """
@@ -67,7 +68,7 @@ class Cart(object):
         return sum(item['quantity'] for item in self.cart.values())
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        return sum(float(item['price']) * item['quantity'] for item in self.cart.values())
 
     def clear(self):
         # remove cart from session

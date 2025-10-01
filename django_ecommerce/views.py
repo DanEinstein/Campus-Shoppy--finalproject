@@ -3,7 +3,13 @@ from shop.models import Product
 
 
 def home_view(request):
-    """Beautiful homepage view - no database queries for safety."""
-    # No database queries to avoid any schema issues
-    context = {}
-    return render(request, "home_beautiful.html", context)
+    """Homepage view with products."""
+    try:
+        products = Product.objects.all()[:8]  # Get first 8 products
+    except Exception:
+        products = []
+    
+    context = {
+        'products': products
+    }
+    return render(request, "home.html", context)

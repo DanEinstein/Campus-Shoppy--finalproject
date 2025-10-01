@@ -41,10 +41,10 @@
           <h2 class="ftco-heading-2">Menu</h2>
           <ul class="list-unstyled">
             <li><a href="{% url 'home' %}" class="py-2 d-block">Shop</a></li>
-            <li><a href="{% url 'about' %}" class="py-2 d-block">About</a></li>
-            <li><a href="{% url 'blog' %}" class="py-2 d-block">Journal</a></li>
+            <li><a href="{% url 'about:about' %}" class="py-2 d-block">About</a></li>
+            <li><a href="{% url 'blog:blog' %}" class="py-2 d-block">Journal</a></li>
             <li>
-              <a href="{% url 'contact' %}" class="py-2 d-block">Contact Us</a>
+              <a href="{% url 'contact:contact' %}" class="py-2 d-block">Contact Us</a>
             </li>
           </ul>
         </div>
@@ -66,7 +66,7 @@
             <ul class="list-unstyled">
               <li><a href="#" class="py-2 d-block">FAQs</a></li>
               <li>
-                <a href="{% url 'contact' %}" class="py-2 d-block">Contact</a>
+                <a href="{% url 'contact:contact' %}" class="py-2 d-block">Contact</a>
               </li>
             </ul>
           </div>
@@ -82,13 +82,13 @@
                 ><span class="text">Maseno, Kenya</span>
               </li>
               <li>
-                <a href="{% url 'contact' %}"
+                <a href="{% url 'contact:contact' %}"
                   ><span class="icon icon-phone"></span
                   ><span class="text">+254712484071</span></a
                 >
               </li>
               <li>
-                <a href="{% url 'contact' %}"
+                <a href="{% url 'contact:contact' %}"
                   ><span class="icon icon-envelope"></span
                   ><span class="text"
                     >abrisonscreatives.agency@gmail.com</span

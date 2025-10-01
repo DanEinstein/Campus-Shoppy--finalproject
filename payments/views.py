@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 
 from cart.models import Order
+from cart.cart import Cart
 from .models import Payment
 
 
@@ -21,6 +22,10 @@ def _mpesa_password() -> str:
 
 
 def _mpesa_token() -> str:
+    # Check if M-Pesa credentials are configured
+    if not settings.MPESA_CONSUMER_KEY or not settings.MPESA_CONSUMER_SECRET:
+        raise ValueError("M-Pesa credentials not configured. Please set MPESA_CONSUMER_KEY and MPESA_CONSUMER_SECRET in your environment variables.")
+    
     url = f"{settings.MPESA_BASE_URL}/oauth/v1/generate?grant_type=client_credentials"
     response = requests.get(url, auth=(settings.MPESA_CONSUMER_KEY, settings.MPESA_CONSUMER_SECRET), timeout=30)
     response.raise_for_status()
@@ -68,24 +73,40 @@ def initiate_payment(request, order_id):
             "PartyB": settings.MPESA_SHORTCODE,
             "PhoneNumber": phone,
             "CallBackURL": settings.MPESA_CALLBACK_URL,
-            "AccountReference": f"ORDER{order.id}",
-            "TransactionDesc": "Campus Shoppy Order Payment"
+            "AccountReference": f"CAMPUS-SHOPPY-{order.id}",
+            "TransactionDesc": "Campus Shoppy - Order Payment"
         }
 
-        token = _mpesa_token()
-        stk_url = f"{settings.MPESA_BASE_URL}/mpesa/stkpush/v1/processrequest"
-        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
-        resp = requests.post(stk_url, headers=headers, json=payload, timeout=30)
-        data = resp.json()
-        if resp.status_code == 200 and data.get('ResponseCode') == '0':
-            payment.merchant_request_id = data.get('MerchantRequestID', '')
-            payment.checkout_request_id = data.get('CheckoutRequestID', '')
-            payment.status = 'pending'
-            payment.save(update_fields=['merchant_request_id', 'checkout_request_id', 'status'])
-            return render(request, 'payments/prompted.html', { 'order': order, 'phone': phone })
-        else:
+        try:
+            token = _mpesa_token()
+            stk_url = f"{settings.MPESA_BASE_URL}/mpesa/stkpush/v1/processrequest"
+            headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+            resp = requests.post(stk_url, headers=headers, json=payload, timeout=30)
+            data = resp.json()
+            if resp.status_code == 200 and data.get('ResponseCode') == '0':
+                payment.merchant_request_id = data.get('MerchantRequestID', '')
+                payment.checkout_request_id = data.get('CheckoutRequestID', '')
+                payment.status = 'pending'
+                payment.save(update_fields=['merchant_request_id', 'checkout_request_id', 'status'])
+                return render(request, 'payments/prompted.html', { 'order': order, 'phone': phone })
+            else:
+                payment.status = 'failed'
+                payment.result_desc = data.get('errorMessage', 'Failed to initiate payment')
+                payment.save(update_fields=['status', 'result_desc'])
+                return render(request, 'payments/failed.html', { 'order': order, 'error': payment.result_desc })
+        except ValueError as e:
+            # M-Pesa credentials not configured - show development mode
+            payment.status = 'development_mode'
+            payment.result_desc = str(e)
+            payment.save(update_fields=['status', 'result_desc'])
+            return render(request, 'payments/development_mode.html', { 
+                'order': order, 
+                'phone': phone,
+                'error': str(e)
+            })
+        except Exception as e:
             payment.status = 'failed'
-            payment.result_desc = data.get('errorMessage', 'Failed to initiate payment')
+            payment.result_desc = f'M-Pesa API error: {str(e)}'
             payment.save(update_fields=['status', 'result_desc'])
             return render(request, 'payments/failed.html', { 'order': order, 'error': payment.result_desc })
 
@@ -123,6 +144,8 @@ def mpesa_callback(request):
         payment.status = 'success'
         payment.order.paid = True
         payment.order.save(update_fields=['paid'])
+        
+        # Note: Cart clearing is handled in the frontend after successful payment
     elif result_code == '1':
         # User cancelled the payment
         payment.status = 'cancelled'
@@ -214,12 +237,29 @@ def verify_payment(request, order_id):
                     
                     # Update payment status based on query result
                     if result_code == 0:
+                        # Payment successful
                         payment.status = 'success'
                         payment.result_code = str(result_code)
                         payment.result_desc = result_desc
                         payment.order.paid = True
                         payment.order.save(update_fields=['paid'])
+                        
+                        # Clear the cart when payment is successful
+                        cart = Cart(request)
+                        cart.clear()
+                    elif result_code == 1032:
+                        # Request cancelled by user
+                        payment.status = 'cancelled'
+                        payment.result_code = str(result_code)
+                        payment.result_desc = result_desc
+                    elif result_code == 2001:
+                        # Initiator information invalid - this might be a timing issue
+                        # Keep status as pending and let user try again
+                        payment.status = 'pending'
+                        payment.result_code = str(result_code)
+                        payment.result_desc = result_desc
                     else:
+                        # Other failure codes
                         payment.status = 'failed'
                         payment.result_code = str(result_code)
                         payment.result_desc = result_desc
@@ -285,6 +325,10 @@ def confirm_payment(request, order_id):
                 payment.order.paid = True
                 payment.order.save(update_fields=['paid'])
                 payment.save()
+                
+                # Clear the cart when payment is confirmed as successful
+                cart = Cart(request)
+                cart.clear()
                 
                 return JsonResponse({
                     'status': 'success',

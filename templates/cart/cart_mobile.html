@@ -33,7 +33,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    {% for item in cart %}
+                    {% for item in cart_items %}
                     <tr>
                       <td class="text-center">
                         <a href="{% url 'cart:remove_from_cart' item.product.id %}" 
@@ -43,13 +43,13 @@
                         </a>
                       </td>
                       <td>
-                        <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" 
+                        <img src="{% if item.product.photo %}{{ item.product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" 
                              class="img-fluid rounded" 
                              style="width: 60px; height: 60px; object-fit: cover;">
                       </td>
                       <td>
                         <h6 class="mb-1">{{ item.product.name }}</h6>
-                        <small class="text-muted">{{ item.product.description|truncatewords:10 }}</small>
+                        <small class="text-muted">{{ item.product.details|truncatewords:10 }}</small>
                       </td>
                       <td class="fw-bold">Ksh {{ item.product.price }}</td>
                       <td>
@@ -70,17 +70,17 @@
               
               <!-- Mobile Card View -->
               <div class="d-lg-none">
-                {% for item in cart %}
+                {% for item in cart_items %}
                 <div class="border-bottom p-3">
                   <div class="row align-items-center">
                     <div class="col-3">
-                      <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" 
+                      <img src="{% if item.product.photo %}{{ item.product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" 
                            class="img-fluid rounded" 
                            style="width: 80px; height: 80px; object-fit: cover;">
                     </div>
                     <div class="col-6">
                       <h6 class="mb-1">{{ item.product.name }}</h6>
-                      <p class="text-muted mb-1 small">{{ item.product.description|truncatewords:8 }}</p>
+                      <p class="text-muted mb-1 small">{{ item.product.details|truncatewords:8 }}</p>
                       <p class="mb-0 fw-bold text-success">Ksh {{ item.total_price }}</p>
                     </div>
                     <div class="col-3 text-end">

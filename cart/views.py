@@ -75,13 +75,49 @@ def cart_detail(request):
     A view to display the cart and its items.
     """
     cart = Cart(request)
+    
+    # Get product information for cart items
+    cart_items = []
+    if cart.cart:
+        product_ids = list(cart.cart.keys())
+        products = Product.objects.filter(id__in=product_ids)
+        product_map = {str(p.id): p for p in products}
+        
+        for product_id, item in cart.cart.items():
+            product = product_map.get(product_id)
+            if product:
+                cart_items.append({
+                    'product': product,
+                    'quantity': item['quantity'],
+                    'price': float(item['price']),
+                    'total_price': float(item['price']) * item['quantity']
+                })
+    
     # Use mobile-optimized template
-    return render(request, 'cart/cart_mobile.html', {'cart': cart})
+    return render(request, 'cart/cart_mobile.html', {'cart': cart, 'cart_items': cart_items})
 
 
 @login_required
 def checkout(request):
     cart = Cart(request)
+    
+    # Get product information for cart items
+    cart_items = []
+    if cart.cart:
+        product_ids = list(cart.cart.keys())
+        products = Product.objects.filter(id__in=product_ids)
+        product_map = {str(p.id): p for p in products}
+        
+        for product_id, item in cart.cart.items():
+            product = product_map.get(product_id)
+            if product:
+                cart_items.append({
+                    'product': product,
+                    'quantity': item['quantity'],
+                    'price': float(item['price']),
+                    'total_price': float(item['price']) * item['quantity']
+                })
+    
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
@@ -93,16 +129,15 @@ def checkout(request):
                 product_map = {str(p.id): p for p in products}
                 order_total = 0
                 # validate each cart line
-                for item in cart:
-                    pid = str(item['product'].id)
-                    product = product_map.get(pid)
+                for product_id, item in cart.cart.items():
+                    product = product_map.get(product_id)
                     if product is None:
                         messages.error(request, 'One of the products in your cart no longer exists.')
                         return redirect('cart:cart_detail')
                     if item['quantity'] > product.inventory:
                         messages.error(request, f'Not enough stock for {product.name}.')
                         return redirect('cart:cart_detail')
-                    line_total = item['price'] * item['quantity']
+                    line_total = float(item['price']) * item['quantity']
                     order_total += line_total
 
                 order = form.save(commit=False)
@@ -110,12 +145,12 @@ def checkout(request):
                 order.total_amount = order_total
                 order.save()
 
-                for item in cart:
-                    product = product_map[str(item['product'].id)]
+                for product_id, item in cart.cart.items():
+                    product = product_map[product_id]
                     OrderItem.objects.create(
                         order=order,
                         product=product,
-                        price=item['price'],
+                        price=float(item['price']),
                         quantity=item['quantity']
                     )
                 # Defer inventory decrement to payment success callback
@@ -123,7 +158,7 @@ def checkout(request):
             return redirect(reverse('payments:initiate', args=[order.id]))
     else:
         form = OrderCreateForm()
-    return render(request, 'cart/checkout_mobile.html', {'cart': cart, 'form': form})
+    return render(request, 'cart/checkout_mobile.html', {'cart': cart, 'cart_items': cart_items, 'form': form})
 
 
 def update_cart(request):

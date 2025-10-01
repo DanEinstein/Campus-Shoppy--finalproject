@@ -66,22 +66,45 @@
 		$('.home-slider').owlCarousel({
 	    loop:true,
 	    autoplay: true,
+	    autoplayTimeout: 5000,
 	    margin:0,
 	    animateOut: 'fadeOut',
 	    animateIn: 'fadeIn',
 	    nav:false,
+	    dots: true,
 	    autoplayHoverPause: false,
 	    items: 1,
+	    touchDrag: true,
+	    mouseDrag: true,
+	    pullDrag: true,
+	    freeDrag: false,
+	    stagePadding: 0,
+	    merge: false,
+	    mergeFit: true,
+	    autoWidth: false,
 	    navText : ["<span class='ion-md-arrow-back'></span>","<span class='ion-chevron-right'></span>"],
 	    responsive:{
 	      0:{
-	        items:1
+	        items:1,
+	        nav: false,
+	        dots: true,
+	        touchDrag: true,
+	        mouseDrag: true,
+	        stagePadding: 0
 	      },
 	      600:{
-	        items:1
+	        items:1,
+	        nav: false,
+	        dots: true,
+	        touchDrag: true,
+	        mouseDrag: true
 	      },
 	      1000:{
-	        items:1
+	        items:1,
+	        nav: true,
+	        dots: true,
+	        touchDrag: true,
+	        mouseDrag: true
 	      }
 	    }
 		});

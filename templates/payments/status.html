@@ -47,7 +47,10 @@
                 </div>
               </div>
               <div class="text-center">
-                <a href="/" class="btn btn-success btn-lg">
+                <a href="{% url 'payments:success' order.id %}" class="btn btn-success btn-lg">
+                  <i class="fas fa-check-circle"></i> View Order Confirmation
+                </a>
+                <a href="{% url 'shop:shop' %}" class="btn btn-outline-primary btn-lg ms-2">
                   <i class="fas fa-shopping-cart"></i> Continue Shopping
                 </a>
               </div>
@@ -105,7 +108,11 @@
                   <div>
                     <h5 class="mb-1">Payment Pending</h5>
                     <p class="mb-0">Please complete the M-Pesa prompt on your phone.</p>
-                    <p class="mb-0 mt-2">If you haven't received the prompt, you can try again.</p>
+                    {% if payment.result_code == '2001' %}
+                      <p class="mb-0 mt-2 text-warning"><strong>Note:</strong> There was a temporary issue with the payment system. Please try again in a moment.</p>
+                    {% else %}
+                      <p class="mb-0 mt-2">If you haven't received the prompt, you can try again.</p>
+                    {% endif %}
                   </div>
                 </div>
               </div>

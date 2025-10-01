@@ -1,0 +1,134 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Development Mode - Payment{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-tools"></i> Development Mode - Payment System
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Campus Shoppy - M-Pesa API Not Configured</h5>
+                        <p class="mb-0">{{ error }}</p>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Order Details:</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Order ID:</strong> #{{ order.id }}</li>
+                                <li><strong>Total Amount:</strong> Ksh {{ order.total_amount }}</li>
+                                <li><strong>Phone:</strong> {{ phone }}</li>
+                                <li><strong>Date:</strong> {{ order.created_at|date:"M d, Y H:i" }}</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Order Items:</h6>
+                            <ul class="list-unstyled">
+                                {% for item in order.items.all %}
+                                <li>{{ item.quantity }}x {{ item.product.name }} - Ksh {{ item.price }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="alert alert-info">
+                        <h6><i class="fas fa-info-circle"></i> Campus Shoppy Development Mode:</h6>
+                        <p>Since M-Pesa credentials are not configured, you can simulate payment completion for testing purposes.</p>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-success" onclick="simulatePayment()">
+                            <i class="fas fa-check"></i> Simulate Successful Payment
+                        </button>
+                        <button class="btn btn-danger" onclick="simulateFailure()">
+                            <i class="fas fa-times"></i> Simulate Failed Payment
+                        </button>
+                        <a href="{% url 'cart:cart_detail' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Cart
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6>To Enable Real M-Pesa Payments:</h6>
+                        <ol>
+                            <li>Register at <a href="https://developer.safaricom.co.ke/" target="_blank">Safaricom Developer Portal</a></li>
+                            <li>Get your Consumer Key and Consumer Secret</li>
+                            <li>Set environment variables:
+                                <ul>
+                                    <li><code>MPESA_CONSUMER_KEY</code></li>
+                                    <li><code>MPESA_CONSUMER_SECRET</code></li>
+                                    <li><code>MPESA_SHORTCODE</code></li>
+                                    <li><code>MPESA_PASSKEY</code></li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function simulatePayment() {
+    if (confirm('Simulate successful payment? This will mark the order as paid.')) {
+        fetch('{% url "payments:confirm" order.id %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: 'confirmation_type=success'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                // Show success message and redirect
+                alert('Payment confirmed successfully! Your cart has been cleared.');
+                window.location.href = '{% url "payments:status" order.id %}';
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        });
+    }
+}
+
+function simulateFailure() {
+    if (confirm('Simulate failed payment? This will mark the order as unpaid.')) {
+        fetch('{% url "payments:confirm" order.id %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: 'confirmation_type=failed'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Payment marked as failed');
+                window.location.href = '{% url "cart:cart_detail" %}';
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error);
+        });
+    }
+}
+</script>
+{% endblock %}
