@@ -66,13 +66,13 @@ class PaystackInitializeView(View):
                 'Content-Type': 'application/json'
             }
             
-            # Convert amount to kobo (Paystack uses kobo for NGN)
-            amount_in_kobo = int(float(order.total_amount) * 100)
+            # Convert amount to cents (Paystack uses cents for KES)
+            amount_in_cents = int(float(order.total_amount) * 100)
             
             payload = {
                 'email': request.user.email,
-                'amount': amount_in_kobo,
-                'currency': 'NGN',  # You can change this to your preferred currency
+                'amount': amount_in_cents,
+                'currency': 'KES',  # Kenyan Shilling
                 'reference': f'CAMPUS-SHOPPY-{order.id}',
                 'callback_url': settings.PAYSTACK_CALLBACK_URL,
                 'metadata': {

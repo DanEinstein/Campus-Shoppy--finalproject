@@ -14,7 +14,7 @@
                 <div class="card-body p-4">
                     <div class="text-center mb-4">
                         <h5>Order #{{ order.id }}</h5>
-                        <p class="text-muted">Amount: <strong class="text-primary">₦{{ order.total_amount }}</strong></p>
+                        <p class="text-muted">Amount: <strong class="text-primary">KSh {{ order.total_amount }}</strong></p>
                     </div>
                     
                     {% if payment.status == 'success' %}
