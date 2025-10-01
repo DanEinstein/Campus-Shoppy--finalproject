@@ -155,6 +155,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login URL
 LOGIN_URL = 'account:signin'
 
+# Cart configuration
+CART_SESSION_ID = 'cart'
+CART_SESSION_KEY = 'cart'
+
 # CKEditor configuration
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
