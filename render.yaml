@@ -10,6 +10,7 @@ services:
       python manage.py collectstatic --noinput
     startCommand: gunicorn django_ecommerce.wsgi:application --bind 0.0.0.0:$PORT
     pythonVersion: 3.11.10
+    poetryVersion: none
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true

@@ -1,8 +1,8 @@
 Django==3.1.14
-Pillow
-django-ckeditor
-python-decouple
-whitenoise
+Pillow>=8.0.0
+django-ckeditor>=6.0.0
+python-decouple>=3.6
+whitenoise>=5.0.0
 gunicorn==21.2.0
-paystack
-requests
+paystack>=1.0.0
+requests>=2.25.0
