@@ -6,7 +6,7 @@
       <div class="col-md-6 order-md-last d-flex">
         <form
           class="bg-white p-5 contact-form"
-          action="{% url 'signup' %}"
+          action="{% url 'account:signup' %}"
           method="post"
         >
           {% csrf_token %}
