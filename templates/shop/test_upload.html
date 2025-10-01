@@ -1,0 +1,43 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Image Upload Test{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Image Upload Test</h2>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h5>Media Configuration</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Media URL:</strong> {{ media_url }}</p>
+                    <p><strong>Media Root:</strong> {{ media_root }}</p>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Product Images Status</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'shop:debug_images' %}" class="btn btn-primary">Check Image Debug Info</a>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5>Test Image Display</h5>
+                </div>
+                <div class="card-body">
+                    <p>Testing static image:</p>
+                    <img src="{% static 'images/product-1.jpg' %}" alt="Test Image" class="img-fluid" style="max-width: 200px;">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

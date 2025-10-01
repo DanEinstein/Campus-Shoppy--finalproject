@@ -8,9 +8,9 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-6 mb-5 ftco-animate">
-        <a href="{% if product.photo and product.photo.url %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" class="image-popup">
+        <a href="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}" class="image-popup">
           <img
-            src="{% if product.photo and product.photo.url %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+            src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
             class="img-fluid"
             alt="{{ product.name }}"
           />
@@ -113,7 +113,7 @@
           <a href="{% url 'shop:product-details' rel_product.id %}" class="img-prod">
             <img
               class="img-fluid"
-              src="{% if rel_product.photo and rel_product.photo.url %}{{ rel_product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+              src="{% if rel_product.photo %}{{ rel_product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
               alt="{{ rel_product.name }}"
             />
             <span class="status">30%</span>

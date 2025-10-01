@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
+from django.conf import settings
 from .models import Category, Product, Wishlist
 from django.contrib.auth.decorators import login_required
 
@@ -71,20 +72,49 @@ def remove_from_wishlist(request, item_id):
 
 def debug_images(request):
     """Debug view to check product images"""
-    products = Product.objects.all()[:5]  # Get first 5 products
+    products = Product.objects.all()[:10]  # Get first 10 products
     debug_data = []
     
     for product in products:
-        debug_data.append({
+        photo_info = {
             'id': product.id,
             'name': product.name,
             'has_photo': bool(product.photo),
-            'photo_url': product.photo.url if product.photo else None,
-            'photo_name': product.photo.name if product.photo else None,
-        })
+            'photo_url': None,
+            'photo_name': None,
+            'photo_exists': False,
+            'photo_size': 0
+        }
+        
+        if product.photo:
+            try:
+                photo_info['photo_url'] = product.photo.url
+                photo_info['photo_name'] = product.photo.name
+                photo_info['photo_exists'] = product.photo.storage.exists(product.photo.name)
+                photo_info['photo_size'] = product.photo.size if hasattr(product.photo, 'size') else 0
+            except Exception as e:
+                photo_info['photo_error'] = str(e)
+        
+        debug_data.append(photo_info)
     
     return JsonResponse({
         'products': debug_data,
-        'total_products': Product.objects.count()
+        'total_products': Product.objects.count(),
+        'products_with_images': Product.objects.exclude(photo='').count(),
+        'products_without_images': Product.objects.filter(photo='').count(),
+        'media_url': settings.MEDIA_URL,
+        'media_root': str(settings.MEDIA_ROOT)
+    })
+
+
+def test_image_upload(request):
+    """Test view to check if image uploads are working"""
+    if request.method == 'POST':
+        # This would be for testing file uploads
+        pass
+    
+    return render(request, 'shop/test_upload.html', {
+        'media_url': settings.MEDIA_URL,
+        'media_root': str(settings.MEDIA_ROOT)
     })
 

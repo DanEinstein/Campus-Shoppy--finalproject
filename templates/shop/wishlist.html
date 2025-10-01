@@ -32,7 +32,7 @@
                 <td class="image-prod">
                   <div
                     class="img"
-                    style="background-image: url({% if item.product.photo and item.product.photo.url %}{{ item.product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %});"
+                    style="background-image: url({% if item.product.photo %}{{ item.product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %});"
                     aria-label="{{ item.product.name }} Image"
                   ></div>
                 </td>

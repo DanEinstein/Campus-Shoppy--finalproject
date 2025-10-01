@@ -59,12 +59,6 @@ class PaystackInitializeView(View):
                 'message': 'Paystack credentials not configured. Please set PAYSTACK_SECRET_KEY environment variable.'
             })
         
-        # Debug: Log the secret key (first 10 characters only for security)
-        print(f"DEBUG: PAYSTACK_SECRET_KEY starts with: {settings.PAYSTACK_SECRET_KEY[:10]}...")
-        print(f"DEBUG: PAYSTACK_PUBLIC_KEY starts with: {settings.PAYSTACK_PUBLIC_KEY[:10]}...")
-        print(f"DEBUG: PAYSTACK_CALLBACK_URL: {settings.PAYSTACK_CALLBACK_URL}")
-        print(f"DEBUG: Order ID: {order.id}, Amount: {order.total_amount}")
-        
         try:
             # Initialize Paystack payment
             headers = {
@@ -77,7 +71,8 @@ class PaystackInitializeView(View):
             
             # Generate unique reference with timestamp to avoid duplicates
             import time
-            unique_reference = f'CAMPUS-SHOPPY-{order.id}-{int(time.time())}'
+            import random
+            unique_reference = f'CAMPUS-SHOPPY-{order.id}-{int(time.time())}-{random.randint(1000, 9999)}'
             
             payload = {
                 'email': request.user.email,
@@ -97,6 +92,8 @@ class PaystackInitializeView(View):
                     ]
                 }
             }
+            
+            print(f"DEBUG: Paystack Request - Amount: {amount_in_cents}, Reference: {unique_reference}")
             
             response = requests.post(
                 'https://api.paystack.co/transaction/initialize',
@@ -136,6 +133,7 @@ class PaystackInitializeView(View):
                 })
                 
         except Exception as e:
+            print(f"DEBUG: Payment Error: {str(e)}")
             return JsonResponse({
                 'status': 'error',
                 'message': f'Payment error: {str(e)}'
