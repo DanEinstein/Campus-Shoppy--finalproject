@@ -52,6 +52,13 @@ class PaystackInitializeView(View):
     def post(self, request, order_id):
         order = get_object_or_404(Order, id=order_id, user=request.user)
         
+        # Check if Paystack credentials are configured
+        if not settings.PAYSTACK_SECRET_KEY:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Paystack credentials not configured. Please set PAYSTACK_SECRET_KEY environment variable.'
+            })
+        
         try:
             # Initialize Paystack payment
             headers = {
