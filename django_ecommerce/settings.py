@@ -27,13 +27,11 @@ SECRET_KEY = config('SECRET_KEY', default='m#i3u2%s5@d8!z6^a7*p(f4)h9g-l0j+k1n_b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-# Allow hosts for production deployment
-# Check if we're running on Render
-RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default='')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'campus-shoppy-maseno-7y1e.onrender.com', '*.onrender.com', '127.0.0.1', 'localhost' ]
-else:
-    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='campus-shoppy-maseno-7y1e.onrender.com,*.onrender.com').split(',')
+# ALLOWED_HOSTS for PythonAnywhere
+# Add your PythonAnywhere domain name here
+# For example: ['your-username.pythonanywhere.com']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
+
 
 
 # Application definition
@@ -93,11 +91,16 @@ WSGI_APPLICATION = 'django_ecommerce.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+# For PythonAnywhere, it is recommended to use MySQL or PostgreSQL.
+# You can configure the database using the DATABASE_URL environment variable.
+# Example for MySQL: DATABASE_URL=mysql://user:password@host/database
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600
+    )
 }
 
 
@@ -145,16 +148,8 @@ STATICFILES_DIRS = [
 
 # Media files
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Ensure media files are served in development
-if DEBUG:
-    # In development, serve media files through Django
-    pass
-else:
-    # In production, we need to configure proper media serving
-    # This will be handled by the web server (Render)
-    pass
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.1/ref/settings/#default-auto-field
@@ -197,4 +192,7 @@ PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='http://localhos
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='http://localhost:8000/payments/callback/')
 
 # CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000').split(',')
+# Add your PythonAnywhere domain name here, without the protocol
+# For example: 'https://your-username.pythonanywhere.com'
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000').split(',')
+
