@@ -22,18 +22,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
+SECRET_KEY = config('SECRET_KEY', default='m#i3u2%s5@d8!z6^a7*p(f4)h9g-l0j+k1n_b$v_c&x=y/w?q,e.t')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Allow hosts for production deployment
 # Check if we're running on Render
 RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default='')
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'campus-shoppy-maseno-7y1e.onrender.com', '*.onrender.com']
+    ALLOWED_HOSTS = [RENDER_EXTERNAL_HOSTNAME, 'campus-shoppy-maseno-7y1e.onrender.com', '*.onrender.com', '127.0.0.1', 'localhost' ]
 else:
-    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0,campus-shoppy-maseno-7y1e.onrender.com,*.onrender.com').split(',')
+    ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='campus-shoppy-maseno-7y1e.onrender.com,*.onrender.com').split(',')
 
 
 # Application definition
@@ -172,42 +172,29 @@ CART_SESSION_KEY = 'cart'
 CKEDITOR_UPLOAD_PATH = "uploads/"
 CKEDITOR_CONFIGS = {
     'default': {
-        'toolbar': 'full',
-        'height': 300,
-        'width': '100%',
-    },
-    'awesome_ckeditor': {
-        'toolbar': 'Basic',
-    },
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ]
+    }
 }
 
-# CKEditor settings
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': None,
-    },
-}
+
 
 # Security headers for production
-SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
-CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 # Paystack configuration via environment variables
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='')
-PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='https://campus-shoppy-maseno-7y1e.onrender.com/payments/paystack/callback/')
-
-# M-Pesa (Daraja) configuration via environment variables (kept for fallback)
-MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
-MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
-MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='174379')  # Sandbox shortcode
-MPESA_PASSKEY = config('MPESA_PASSKEY', default='')  # Sandbox passkey
-MPESA_BASE_URL = config('MPESA_BASE_URL', default='https://sandbox.safaricom.co.ke')
-# For local testing with ngrok, use: https://your-ngrok-url.ngrok.io/payments/callback/
-# For production, use: https://campus-shoppy-maseno.onrender.com/payments/callback/
-MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='https://campus-shoppy-maseno-7y1e.onrender.com/payments/callback/')
+PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='http://localhost:8000/payments/paystack/callback/')
+MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='http://localhost:8000/payments/callback/')
 
 # CSRF trusted origins
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='https://campus-shoppy-maseno-7y1e.onrender.com').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else ['https://campus-shoppy-maseno-7y1e.onrender.com']
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000').split(',')
