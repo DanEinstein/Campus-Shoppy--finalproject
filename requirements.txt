@@ -7,4 +7,4 @@ gunicorn==21.2.0
 paystack>=1.0.0
 requests>=2.25.0
 dj-database-url
-mysqlclient
+psycopg2-binary
