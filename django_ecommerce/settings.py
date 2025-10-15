@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'shop',
     'cart',
     'author',
-    'payments',
+    'payments.apps.PaymentsConfig',
     'account',
 ]
 
