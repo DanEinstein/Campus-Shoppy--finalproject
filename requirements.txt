@@ -6,3 +6,5 @@ whitenoise>=5.0.0
 gunicorn==21.2.0
 paystack>=1.0.0
 requests>=2.25.0
+dj-database-url
+mysqlclient
