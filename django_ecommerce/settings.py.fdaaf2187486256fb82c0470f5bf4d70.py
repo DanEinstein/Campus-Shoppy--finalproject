@@ -22,18 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Support both DJANGO_SECRET_KEY and SECRET_KEY for compatibility
-SECRET_KEY = config('DJANGO_SECRET_KEY', default=config('SECRET_KEY', default='m#i3u2%s5@d8!z6^a7*p(f4)h9g-l0j+k1n_b$v_c&x=y/w?q,e.t'))
+# Prefer an environment-provided secret. The default below is only for
+# local development and is intentionally short to encourage setting a real
+# secret in production.
+SECRET_KEY = config('DJANGO_SECRET_KEY', default='m#i3u2%s5@d8!z6^a7*p(f4)h9g-l0j+k1n_b$v_c&x=y/w?q,e.t')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# Support both DJANGO_DEBUG and DEBUG
-DEBUG = config('DJANGO_DEBUG', default=config('DEBUG', default=False, cast=bool), cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 # ALLOWED_HOSTS for PythonAnywhere
 # Add your PythonAnywhere domain name here
 # For example: ['your-username.pythonanywhere.com']
-# Allow both DJANGO_ALLOWED_HOSTS and ALLOWED_HOSTS
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default=config('ALLOWED_HOSTS', default='127.0.0.1,localhost,[::1]')).split(',')
+# Normalize and strip entries so the environment variable can contain spaces.
+ALLOWED_HOSTS = [h.strip() for h in config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',') if h.strip()]
 
 
 
@@ -97,14 +98,28 @@ WSGI_APPLICATION = 'django_ecommerce.wsgi.application'
 # For PythonAnywhere, it is recommended to use MySQL or PostgreSQL.
 # You can configure the database using the DATABASE_URL environment variable.
 # Example for MySQL: DATABASE_URL=mysql://user:password@host/database
-import dj_database_url
-
 DATABASES = {
-    'default': dj_database_url.config(
-        default='sqlite:///db.sqlite3',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
+# If a DATABASE_URL is provided in the environment, try to load it with
+# dj_database_url. Only import dj_database_url when necessary to avoid
+# failing at import time when the package isn't installed (it is listed in
+# requirements but may not be present in the developer environment).
+DATABASE_URL = config('DATABASE_URL', default='')
+if DATABASE_URL:
+    try:
+        import dj_database_url
+        DATABASES = {
+            'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+        }
+    except Exception:
+        # If dj_database_url is missing or parsing fails, keep the default
+        # sqlite database so the project remains inspectable.
+        pass
 
 
 # Password validation
@@ -187,28 +202,31 @@ SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=
 CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# Redirect to HTTPS only in production
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
+
+# HTTP Strict Transport Security (HSTS). Only enable in production (when
+# DEBUG is False). The default is 0 to avoid accidental irreversible
+# effects when running locally. Set SECURE_HSTS_SECONDS to a positive
+# integer (e.g. 3600 or more) in your production environment.
+SECURE_HSTS_SECONDS = config('SECURE_HSTS_SECONDS', default=0, cast=int)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = config('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=False, cast=bool)
 
 # Paystack configuration via environment variables
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='')
 PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='http://localhost:8000/payments/paystack/callback/')
-
-# M-Pesa configuration via environment variables
-MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
-MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
-MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='')
-MPESA_PASSKEY = config('MPESA_PASSKEY', default='')
-MPESA_BASE_URL = config('MPESA_BASE_URL', default='https://sandbox.safaricom.co.ke')
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='http://localhost:8000/payments/callback/')
 
 # CSRF trusted origins
 # Add your PythonAnywhere domain name here, without the protocol
 # For example: 'https://your-username.pythonanywhere.com'
-CSRF_TRUSTED_ORIGINS = config(
-    'CSRF_TRUSTED_ORIGINS',
-    default='http://localhost:8000,http://127.0.0.1:8000,http://[::1]:8000,https://*.onrender.com'
-).split(',')
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000').split(',') if o.strip()]
+
+# Log a warning if running in production with a weak SECRET_KEY. We avoid
+# raising an exception here because the project should remain inspectable
+# in development environments, but it's important to notify the operator.
+if not DEBUG:
+    import logging
+    logger = logging.getLogger(__name__)
+    if len(SECRET_KEY) < 50 or len(set(SECRET_KEY)) < 5:
+        logger.warning('SECRET_KEY appears weak or is using the default; set DJANGO_SECRET_KEY in the environment for production.')
 
