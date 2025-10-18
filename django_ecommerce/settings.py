@@ -33,7 +33,11 @@ DEBUG = config('DJANGO_DEBUG', default=config('DEBUG', default=True, cast=bool),
 # Add your PythonAnywhere domain name here
 # For example: ['your-username.pythonanywhere.com']
 # Allow both DJANGO_ALLOWED_HOSTS and ALLOWED_HOSTS
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default=config('ALLOWED_HOSTS', default='127.0.0.1,localhost,[::1],campus-shoppy-maseno.onrender.com,*.onrender.com')).split(',')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'campus-shoppy-maseno.onrender.com'  # Your specific Render URL
+]
 
 
 
