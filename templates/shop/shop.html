@@ -1,7 +1,9 @@
-{% extends 'base/base.html' %} {% load static %} {% block content %}
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
 <div
   class="hero-wrap hero-bread"
-  style="background-image: url({% static "images/Homepage3.jpg" %})"
+  style="background-image:url({% static 'images/shopbackground.jpg' %})"
 >
   <div class="container">
     <div
@@ -43,11 +45,15 @@
       </div>
     </div>
     <div class="row">
-      {% if products %} {% for product in products %}
+      {% if products %}
+        {% for product in products %}
       <div class="col-md-6 col-lg-3 ftco-animate">
         <div class="product">
-          <a href="{% url 'shop:product-details' product.id %}" class="img-prod"
-            ><img
+          <a
+            href="{% url 'shop:product-details' product.id %}"
+            class="img-prod"
+          >
+            <img
               class="img-fluid"
               src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
               onerror="this.src='{% static 'images/product-1.jpg' %}'"
@@ -69,7 +75,7 @@
             <div class="bottom-area d-flex px-3">
               <div class="m-auto d-flex">
                 <a
-                  href="#"
+                  href="{% url 'shop:product-details' product.id %}"
                   class="add-to-cart d-flex justify-content-center align-items-center text-center"
                 >
                   <span><i class="ion-ios-menu"></i></span>
@@ -102,18 +108,20 @@
           </div>
         </div>
       </div>
-      {% endfor %} {% else %}
+        {% empty %}
       <div class="col-12 text-center py-5">
         <h4 class="mb-3">No Products Found!</h4>
         <p class="text-muted">
           Sorry, we couldn't find any products matching your criteria.
         </p>
-        <a href="{% url 'shop:shop' %}" class="btn btn-primary mt-3"
-          >View All Products</a
-        >
+        <a href="{% url 'shop:shop' %}" class="btn btn-primary mt-3">
+          View All Products
+        </a>
       </div>
+        {% endfor %}
       {% endif %}
     </div>
+
     {% if products.has_other_pages %}
     <div class="row mt-5">
       <div class="col text-center">
@@ -126,17 +134,20 @@
                 >&lt;</a
               >
             </li>
-            {% endif %} {% for i in products.paginator.page_range %} {% if
-            products.number == i %}
-            <li class="active"><span>{{ i }}</span></li>
-            {% else %}
-            <li>
-              <a
-                href="?page={{ i }}{% if current_category %}&category={{ current_category.slug }}{% endif %}"
-                >{{ i }}</a
-              >
-            </li>
-            {% endif %} {% endfor %} {% if products.has_next %}
+            {% endif %}
+            {% for i in products.paginator.page_range %}
+              {% if products.number == i %}
+              <li class="active"><span>{{ i }}</span></li>
+              {% else %}
+              <li>
+                <a
+                  href="?page={{ i }}{% if current_category %}&category={{ current_category.slug }}{% endif %}"
+                  >{{ i }}</a
+                >
+              </li>
+              {% endif %}
+            {% endfor %}
+            {% if products.has_next %}
             <li>
               <a
                 href="?page={{ products.next_page_number }}{% if current_category %}&category={{ current_category.slug }}{% endif %}"
@@ -152,4 +163,5 @@
   </div>
 </section>
 
-{% include 'includes/newsletter.html' %} {% endblock %}
+{% include 'includes/newsletter.html' %}
+{% endblock %}
