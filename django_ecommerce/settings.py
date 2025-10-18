@@ -27,7 +27,7 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default=config('SECRET_KEY', default='m
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Support both DJANGO_DEBUG and DEBUG
-DEBUG = config('DJANGO_DEBUG', default=config('DEBUG', default=False, cast=bool), cast=bool)
+DEBUG = config('DJANGO_DEBUG', default=config('DEBUG', default=True, cast=bool), cast=bool)
 
 # ALLOWED_HOSTS for PythonAnywhere
 # Add your PythonAnywhere domain name here
@@ -183,13 +183,13 @@ CKEDITOR_CONFIGS = {
 
 
 # Security headers for production
-SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=not DEBUG, cast=bool)
-CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=not DEBUG, cast=bool)
+SESSION_COOKIE_SECURE = config('SESSION_COOKIE_SECURE', default=False, cast=bool)
+CSRF_COOKIE_SECURE = config('CSRF_COOKIE_SECURE', default=False, cast=bool)
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # Redirect to HTTPS only in production
-SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=not DEBUG, cast=bool)
+SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=False, cast=bool)
 
 # Paystack configuration via environment variables
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='')
