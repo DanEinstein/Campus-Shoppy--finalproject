@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.views.generic import RedirectView
 from django.http import HttpResponse
+from django.views.decorators.cache import never_cache
 from django.conf import settings
 from django.conf.urls.static import static
 from django.views.static import serve
@@ -39,6 +40,8 @@ urlpatterns = [
     path('account/', include('account.urls')),
     # Handle Chrome DevTools well-known probe to reduce 404 noise
     path('.well-known/appspecific/com.chrome.devtools.json', lambda request: HttpResponse(status=204)),
+    # Handle favicon requests
+    path('favicon.ico', lambda request: HttpResponse(status=204)),
 ]
 
 # Gracefully handle accidental paste of terminal hint (leading space becomes %20)
