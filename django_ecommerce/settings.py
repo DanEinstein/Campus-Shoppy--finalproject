@@ -33,7 +33,7 @@ DEBUG = config('DJANGO_DEBUG', default=config('DEBUG', default=True, cast=bool),
 # Add your PythonAnywhere domain name here
 # For example: ['your-username.pythonanywhere.com']
 # Allow both DJANGO_ALLOWED_HOSTS and ALLOWED_HOSTS
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default=config('ALLOWED_HOSTS', default='127.0.0.1,localhost,[::1]')).split(',')
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default=config('ALLOWED_HOSTS', default='127.0.0.1,localhost,[::1],campus-shoppy-maseno.onrender.com,*.onrender.com')).split(',')
 
 
 
@@ -64,7 +64,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',  # Temporarily disabled
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # 'django.contrib.auth.middleware.AuthenticationMiddleware',  # Temporarily disabled
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -80,9 +80,9 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
+                # 'django.contrib.auth.context_processors.auth',  # Temporarily disabled
                 'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart',
+                # 'cart.context_processors.cart',  # Temporarily disabled
             ],
         },
     },
