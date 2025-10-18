@@ -71,7 +71,12 @@ def remove_from_wishlist(request, item_id):
 
 
 def debug_images(request):
-    """Debug view to check product images"""
+    """Debug view to check product images - ONLY for development"""
+    # Security: Only allow in DEBUG mode and for superusers
+    if not settings.DEBUG and not (request.user.is_authenticated and request.user.is_superuser):
+        from django.http import Http404
+        raise Http404("Page not found")
+    
     products = Product.objects.all()[:10]  # Get first 10 products
     debug_data = []
     
@@ -108,7 +113,12 @@ def debug_images(request):
 
 
 def test_image_upload(request):
-    """Test view to check if image uploads are working"""
+    """Test view to check if image uploads are working - ONLY for development"""
+    # Security: Only allow in DEBUG mode and for superusers
+    if not settings.DEBUG and not (request.user.is_authenticated and request.user.is_superuser):
+        from django.http import Http404
+        raise Http404("Page not found")
+    
     if request.method == 'POST':
         # This would be for testing file uploads
         pass
@@ -120,7 +130,12 @@ def test_image_upload(request):
 
 
 def debug_media_files(request):
-    """Debug view to check media file serving"""
+    """Debug view to check media file serving - ONLY for development"""
+    # Security: Only allow in DEBUG mode and for superusers
+    if not settings.DEBUG and not (request.user.is_authenticated and request.user.is_superuser):
+        from django.http import Http404
+        raise Http404("Page not found")
+    
     import os
     from django.conf import settings
     

@@ -190,7 +190,28 @@ def paystack_callback(request):
             verify_data = verify_response.json()
             
             if verify_data.get('status') and verify_data['data']['status'] == 'success':
-                # Payment successful
+                # CRITICAL: Verify amount matches to prevent fraud
+                paid_amount = Decimal(str(verify_data['data']['amount'])) / 100  # Convert from cents
+                expected_amount = payment.order.total_amount
+                
+                # Allow 1 cent difference for rounding
+                if abs(paid_amount - expected_amount) > Decimal('0.01'):
+                    # Amount mismatch - potential fraud!
+                    payment.status = 'failed'
+                    payment.result_desc = f'Amount mismatch: Paid {paid_amount}, Expected {expected_amount}'
+                    payment.save()
+                    
+                    # Log this for security review
+                    import logging
+                    logger = logging.getLogger('payments')
+                    logger.error(f'PAYMENT FRAUD ATTEMPT: Order {payment.order.id}, Reference {payment.paystack_reference}, Paid {paid_amount}, Expected {expected_amount}')
+                    
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Payment amount verification failed'
+                    }, status=400)
+                
+                # Payment successful and amount verified
                 payment.status = 'success'
                 payment.result_code = '00'
                 payment.result_desc = 'Payment successful'
@@ -199,9 +220,14 @@ def paystack_callback(request):
                 payment.order.save()
                 payment.save()
                 
-                # Clear the cart
-                cart = Cart(request)
-                cart.clear()
+                # Decrement inventory for each item in the order
+                for item in payment.order.items.all():
+                    product = item.product
+                    product.inventory -= item.quantity
+                    product.save(update_fields=['inventory'])
+                
+                # Clear the cart (Note: This is in webhook, so no user session available)
+                # Cart clearing happens in the success view instead
                 
                 return JsonResponse({'status': 'success'})
             else:
@@ -221,11 +247,69 @@ def paystack_callback(request):
 
 @login_required
 def paystack_success(request, order_id):
-    """Display payment success page"""
+    """Display payment success page - with verification"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
     payment = get_object_or_404(Payment, order=order)
     
-    # Clear the cart after successful payment
+    # SECURITY: Verify payment was actually successful before showing success page
+    if payment.status != 'success':
+        # Payment not successful - verify with Paystack
+        if payment.paystack_reference:
+            headers = {
+                'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
+                'Content-Type': 'application/json'
+            }
+            
+            try:
+                verify_response = requests.get(
+                    f'https://api.paystack.co/transaction/verify/{payment.paystack_reference}',
+                    headers=headers,
+                    timeout=30
+                )
+                
+                if verify_response.status_code == 200:
+                    verify_data = verify_response.json()
+                    
+                    if verify_data.get('status') and verify_data['data']['status'] == 'success':
+                        # Verify amount matches
+                        paid_amount = Decimal(str(verify_data['data']['amount'])) / 100
+                        expected_amount = order.total_amount
+                        
+                        if abs(paid_amount - expected_amount) <= Decimal('0.01'):
+                            # Update payment status
+                            payment.status = 'success'
+                            payment.result_code = '00'
+                            payment.result_desc = 'Payment successful'
+                            payment.order.paid = True
+                            payment.order.save()
+                            payment.save()
+                            
+                            # Decrement inventory
+                            for item in order.items.all():
+                                product = item.product
+                                product.inventory -= item.quantity
+                                product.save(update_fields=['inventory'])
+                        else:
+                            # Amount mismatch
+                            messages.error(request, 'Payment verification failed: Amount mismatch')
+                            return redirect('cart:cart_detail')
+                    else:
+                        messages.error(request, 'Payment was not successful. Please try again.')
+                        return redirect('cart:cart_detail')
+                else:
+                    messages.error(request, 'Unable to verify payment. Please contact support.')
+                    return redirect('cart:cart_detail')
+            except Exception as e:
+                import logging
+                logger = logging.getLogger('payments')
+                logger.error(f'Payment verification error in success view: {str(e)}')
+                messages.error(request, f'Payment verification error. Please contact support.')
+                return redirect('cart:cart_detail')
+        else:
+            messages.error(request, 'No payment reference found')
+            return redirect('cart:cart_detail')
+    
+    # Payment is verified as successful - clear cart and show success
     cart = Cart(request)
     cart.clear()
     

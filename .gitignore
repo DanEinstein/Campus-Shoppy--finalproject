@@ -38,6 +38,10 @@ db.sqlite3-journal
 media/
 staticfiles/
 
+# Logs
+logs/*.log
+!logs/.gitkeep
+
 # Environment variables
 .env
 .env.local
@@ -62,4 +66,13 @@ Thumbs.db
 # Deployment
 .vercel
 .netlify
+.Render
+.DEPLOYMENT_COMMANDS.md
+.FIX_SUMMARY.md
+.IMPLEMENTATION.md
+.QUICK_START.md
+.README_Implementation.md
+.README_Quick_Start.md
+.README_Implementation.md
+.README_Quick_Start.md
 

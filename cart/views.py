@@ -5,7 +5,7 @@ from django.contrib import messages
 from shop.models import Product
 from .cart import Cart
 from .forms import CartAddProductForm, OrderCreateForm
-from .models import OrderItem
+from .models import Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 
