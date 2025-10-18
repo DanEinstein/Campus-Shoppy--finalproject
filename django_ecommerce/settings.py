@@ -29,6 +29,21 @@ SECRET_KEY = config('DJANGO_SECRET_KEY', default=config('SECRET_KEY', default='m
 # Support both DJANGO_DEBUG and DEBUG
 DEBUG = config('DJANGO_DEBUG', default=config('DEBUG', default=True, cast=bool), cast=bool)
 
+# Add logging to see what's happening
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
 # ALLOWED_HOSTS for PythonAnywhere
 # Add your PythonAnywhere domain name here
 # For example: ['your-username.pythonanywhere.com']

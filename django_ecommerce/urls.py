@@ -27,7 +27,7 @@ from .health import health_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.simple_home, name='home'),
+    path('', views.home_view, name='home'),
     path('home/', views.home_view, name='home'),
     path('health/', health_check, name='health'),
     path('test/', lambda request: HttpResponse('OK', content_type='text/plain')),
