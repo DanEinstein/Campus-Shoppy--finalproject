@@ -1,58 +1,25 @@
 from pathlib import Path
 from decouple import config, Csv
 import dj_database_url
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('DJANGO_SECRET_KEY',
-                    default='a-secure-default-secret-key-for-development')
-DEBUG = config('DJANGO_DEBUG', default=True, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='m#i3u2%s5@d8!z6^a7*p(f4)h9g-l0j+k1n_b$v_c&x=y/w?q,e.t')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-<<<<<<< HEAD
 # Cloudinary Configuration
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME', default=''),
-    'API_KEY': config('CLOUDINARY_API_KEY', default=''),
-    'API_SECRET': config('CLOUDINARY_API_SECRET', default=''),
-}
-
-cloudinary.config(
-    cloud_name=CLOUDINARY_STORAGE['CLOUD_NAME'],
-    api_key=CLOUDINARY_STORAGE['API_KEY'],
-    api_secret=CLOUDINARY_STORAGE['API_SECRET'],
-    secure=True
-)
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='m#i3u2%s5@d8!z6^a7*p(f4)h9g-l0j+k1n_b$v_c&x=y/w?q,e.t')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
-
-# ALLOWED_HOSTS for PythonAnywhere
-# Add your PythonAnywhere domain name here
-# For example: ['your-username.pythonanywhere.com']
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost').split(',')
-
-
-
-# Application definition
-=======
 # This robustly handles allowed hosts for both local and Render deployment
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS',
-                       default='127.0.0.1,localhost', cast=Csv())
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost', cast=Csv())
 RENDER_EXTERNAL_HOSTNAME = config('RENDER_EXTERNAL_HOSTNAME', default=None)
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
->>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
+
+# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -62,10 +29,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'cloudinary_storage',
     'django.contrib.staticfiles',
-<<<<<<< HEAD
-    'cloudinary_storage',
-=======
->>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
     'cloudinary',
     'ckeditor',
     'ckeditor_uploader',
@@ -111,18 +74,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_ecommerce.wsgi.application'
 
-<<<<<<< HEAD
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-# For PythonAnywhere, it is recommended to use MySQL or PostgreSQL.
-# You can configure the database using the DATABASE_URL environment variable.
-# Example for MySQL: DATABASE_URL=mysql://user:password@host/database
-import dj_database_url
-
-=======
->>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
 DATABASES = {
     'default': dj_database_url.config(
         default='sqlite:///db.sqlite3',
@@ -151,16 +102,6 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Use Cloudinary for media storage in production
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-<<<<<<< HEAD
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.1/ref/settings/#default-auto-field
-
-=======
->>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- Cloudinary Configuration ---
@@ -202,17 +143,13 @@ CSRF_TRUSTED_ORIGINS = config(
 # --- Payment Gateways (Now with safe defaults) ---
 PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY', default='')
 PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY', default='')
-<<<<<<< HEAD
 PAYSTACK_CALLBACK_URL = config('PAYSTACK_CALLBACK_URL', default='http://localhost:8000/payments/paystack/callback/')
 
 # M-Pesa configuration via environment variables
-=======
->>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
 MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY', default='')
 MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET', default='')
 MPESA_SHORTCODE = config('MPESA_SHORTCODE', default='')
 MPESA_PASSKEY = config('MPESA_PASSKEY', default='')
-<<<<<<< HEAD
 MPESA_BASE_URL = config('MPESA_BASE_URL', default='https://sandbox.safaricom.co.ke')
 MPESA_CALLBACK_URL = config('MPESA_CALLBACK_URL', default='http://localhost:8000/payments/callback/')
 
@@ -252,11 +189,3 @@ LOGGING = {
         },
     },
 }
-
-# CSRF trusted origins
-# Add your PythonAnywhere domain name here, without the protocol
-# For example: 'https://your-username.pythonanywhere.com'
-CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='http://localhost:8000,http://127.0.0.1:8000').split(',')
-
-=======
->>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
