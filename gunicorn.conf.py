@@ -35,5 +35,3 @@ tmp_upload_dir = None
 keyfile = None
 certfile = None
 
-# Application
-wsgi_module = "django_ecommerce.wsgi:application"
