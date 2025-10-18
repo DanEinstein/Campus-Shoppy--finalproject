@@ -30,6 +30,7 @@ urlpatterns = [
     path('', views.home_view, name='home'),
     path('home/', views.home_view, name='home'),
     path('health/', health_check, name='health'),
+    path('test/', lambda request: HttpResponse('OK', content_type='text/plain')),
     path('blog/', include('blog.urls')),
     path('contact/', include('contact.urls')),
     path('about/', include('about.urls')),
