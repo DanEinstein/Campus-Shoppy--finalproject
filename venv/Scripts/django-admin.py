@@ -1,4 +1,4 @@
-#!C:\Users\User\OneDrive\Desktop\Campus Shoppy\venv\Scripts\python.exe
+#!C:\Users\User\Desktop\Campus Shoppy\venv\Scripts\python.exe
 # When the django-admin.py deprecation ends, remove this script.
 import warnings
 

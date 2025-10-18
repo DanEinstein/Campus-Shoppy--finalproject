@@ -52,12 +52,6 @@ urlpatterns += [
     re_path(r"^\sQuit\s+the\s+server\s+with\s+CTRL\-BREAK\.$", RedirectView.as_view(url='/', permanent=False)),
 ]
 
-# Serve media files in production
-if not settings.DEBUG:
-    urlpatterns += [
-        path('media/<path:path>', serve, {'document_root': settings.MEDIA_ROOT}),
-    ]
-
-# Serve static and media files in development
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
