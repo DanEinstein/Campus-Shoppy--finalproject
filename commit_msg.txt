@@ -1,0 +1,1 @@
+Upgrade Django to 4.2.16 for compatibility

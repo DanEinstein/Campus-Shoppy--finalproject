@@ -1,7 +1,9 @@
-{% extends 'base/base.html' %} {% load static %} {% block content %}
+{% extends 'base/base.html' %}
+{% load static %}
+{% block content %}
 <div
   class="hero-wrap hero-bread"
-  style="background-image: url({% static 'images/Homepage3.jpg' %})"
+  style="background-image:url({% static 'images/shopbackground.jpg' %})"
 >
   <div class="container">
     <div
@@ -23,19 +25,35 @@
     <div class="row justify-content-center">
       <div class="col-md-10 mb-5 text-center">
         <ul class="product-category">
-          <li><a href="#" class="active">All</a></li>
+          <li>
+            <a
+              href="{% url 'shop:shop' %}"
+              class="{% if not current_category %}active{% endif %}"
+              >All</a
+            >
+          </li>
           {% for ctg in category %}
-          <li><a href="#">{{ ctg.name }}</a></li>
+          <li>
+            <a
+              href="{% url 'shop:shop' %}?category={{ ctg.slug }}"
+              class="{% if current_category.slug == ctg.slug %}active{% endif %}"
+              >{{ ctg.name }}</a
+            >
+          </li>
           {% endfor %}
         </ul>
       </div>
     </div>
     <div class="row">
-      {% if products %} {% for product in products %}
+      {% if products %}
+        {% for product in products %}
       <div class="col-md-6 col-lg-3 ftco-animate">
         <div class="product">
-          <a href="{% url 'shop:product-details' product.id %}" class="img-prod"
-            ><img
+          <a
+            href="{% url 'shop:product-details' product.id %}"
+            class="img-prod"
+          >
+            <img
               class="img-fluid"
               src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
               onerror="this.src='{% static 'images/product-1.jpg' %}'"
@@ -57,25 +75,31 @@
             <div class="bottom-area d-flex px-3">
               <div class="m-auto d-flex">
                 <a
-                  href="#"
+                  href="{% url 'shop:product-details' product.id %}"
                   class="add-to-cart d-flex justify-content-center align-items-center text-center"
                 >
                   <span><i class="ion-ios-menu"></i></span>
                 </a>
-                <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <input type="hidden" name="quantity" value="1">
-                    <input type="hidden" name="update" value="False">
-                    <button
-                      type="submit"
-                      class="buy-now d-flex justify-content-center align-items-center mx-1"
-                    >
-                      <span><i class="ion-ios-cart"></i></span>
-                    </button>
+                <form
+                  action="{% url 'cart:add_to_cart' product.id %}"
+                  method="post"
+                  class="d-inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" value="1" />
+                  <input type="hidden" name="update" value="False" />
+                  <button
+                    type="submit"
+                    class="buy-now d-flex justify-content-center align-items-center mx-1"
+                    aria-label="Add {{ product.name }} to cart"
+                  >
+                    <span><i class="ion-ios-cart"></i></span>
+                  </button>
                 </form>
                 <a
                   href="{% url 'shop:add_to_wishlist' product.id %}"
                   class="heart d-flex justify-content-center align-items-center"
+                  aria-label="Add {{ product.name }} to wishlist"
                 >
                   <span><i class="ion-ios-heart"></i></span>
                 </a>
@@ -84,26 +108,60 @@
           </div>
         </div>
       </div>
-      {% endfor %} {% else %}
-      <p>There is No Product Here!</p>
+        {% empty %}
+      <div class="col-12 text-center py-5">
+        <h4 class="mb-3">No Products Found!</h4>
+        <p class="text-muted">
+          Sorry, we couldn't find any products matching your criteria.
+        </p>
+        <a href="{% url 'shop:shop' %}" class="btn btn-primary mt-3">
+          View All Products
+        </a>
+      </div>
+        {% endfor %}
       {% endif %}
     </div>
+
+    {% if products.has_other_pages %}
     <div class="row mt-5">
       <div class="col text-center">
         <div class="block-27">
           <ul>
-            <li><a href="#">&lt;</a></li>
-            <li class="active"><span>1</span></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">5</a></li>
-            <li><a href="#">&gt;</a></li>
+            {% if products.has_previous %}
+            <li>
+              <a
+                href="?page={{ products.previous_page_number }}{% if current_category %}&category={{ current_category.slug }}{% endif %}"
+                >&lt;</a
+              >
+            </li>
+            {% endif %}
+            {% for i in products.paginator.page_range %}
+              {% if products.number == i %}
+              <li class="active"><span>{{ i }}</span></li>
+              {% else %}
+              <li>
+                <a
+                  href="?page={{ i }}{% if current_category %}&category={{ current_category.slug }}{% endif %}"
+                  >{{ i }}</a
+                >
+              </li>
+              {% endif %}
+            {% endfor %}
+            {% if products.has_next %}
+            <li>
+              <a
+                href="?page={{ products.next_page_number }}{% if current_category %}&category={{ current_category.slug }}{% endif %}"
+                >&gt;</a
+              >
+            </li>
+            {% endif %}
           </ul>
         </div>
       </div>
     </div>
+    {% endif %}
   </div>
 </section>
 
-{% include 'includes/newsletter.html' %} {% endblock %}
+{% include 'includes/newsletter.html' %}
+{% endblock %}

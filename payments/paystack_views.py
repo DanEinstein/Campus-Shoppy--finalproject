@@ -1,194 +1,84 @@
+# payments/views.py
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.conf import settings
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from django.utils.decorators import method_decorator
 from django.views import View
-import json
+from django.utils.decorators import method_decorator
 import requests
-from decimal import Decimal
 from .models import Payment
 from cart.models import Order
 from cart.cart import Cart
-
+import time
+import random
 
 class PaystackPaymentView(View):
-    """Handle Paystack payment initialization"""
-    
+    """
+    Renders the page that will initiate the Paystack payment popup.
+    """
     @method_decorator(login_required)
     def get(self, request, order_id):
-        order = get_object_or_404(Order, id=order_id, user=request.user)
-        
-        # Create or get payment record
-        payment, created = Payment.objects.get_or_create(
+        try:
+            order = Order.objects.get(id=order_id, user=request.user, paid=False)
+        except Order.DoesNotExist:
+            messages.error(request, "Order not found or has already been paid.")
+            return redirect('shop:shop')
+
+        # Generate a unique reference for the payment
+        unique_reference = f'CAMPUS-SHOPPY-{order.id}-{int(time.time())}-{random.randint(1000, 9999)}'
+
+        # Create or update the payment record with the reference
+        payment, _ = Payment.objects.update_or_create(
             order=order,
             defaults={
                 'payment_method': 'paystack',
                 'email': request.user.email,
-                'amount': order.total_amount,
+                'amount': order.get_total_cost(),
+                'reference': unique_reference,
                 'status': 'pending'
             }
         )
-        
-        if not created:
-            payment.amount = order.total_amount
-            payment.email = request.user.email
-            payment.save()
-        
-        return render(request, 'payments/paystack_initiate.html', {
+
+        context = {
             'order': order,
             'payment': payment,
-            'paystack_public_key': settings.PAYSTACK_PUBLIC_KEY
-        })
-
-
-class PaystackInitializeView(View):
-    """Initialize Paystack payment"""
-    
-    @method_decorator(login_required)
-    def post(self, request, order_id):
-        order = get_object_or_404(Order, id=order_id, user=request.user)
-        
-        # Check if Paystack credentials are configured
-        if not settings.PAYSTACK_SECRET_KEY:
-            return JsonResponse({
-                'status': 'error',
-                'message': 'Paystack credentials not configured. Please set PAYSTACK_SECRET_KEY environment variable.'
-            })
-        
-        try:
-            # Initialize Paystack payment
-            headers = {
-                'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
-                'Content-Type': 'application/json'
-            }
-            
-            # Convert amount to cents (Paystack uses cents for KES)
-            amount_in_cents = int(float(order.total_amount) * 100)
-            
-            # Generate unique reference with timestamp to avoid duplicates
-            import time
-            import random
-            unique_reference = f'CAMPUS-SHOPPY-{order.id}-{int(time.time())}-{random.randint(1000, 9999)}'
-            
-            # Ensure user has a valid email
-            user_email = request.user.email
-            if not user_email or user_email.strip() == '':
-                # Generate a temporary email if user doesn't have one
-                user_email = f'user{request.user.id}@campus-shoppy.com'
-                print(f"DEBUG: User {request.user.username} has no email, using fallback: {user_email}")
-            
-            payload = {
-                'email': user_email,
-                'amount': amount_in_cents,
-                'currency': 'KES',  # Kenyan Shilling
-                'reference': unique_reference,
-                'callback_url': settings.PAYSTACK_CALLBACK_URL,
-                'metadata': {
-                    'order_id': order.id,
-                    'user_id': request.user.id,
-                    'username': request.user.username,
-                    'custom_fields': [
-                        {
-                            'display_name': 'Order ID',
-                            'variable_name': 'order_id',
-                            'value': str(order.id)
-                        },
-                        {
-                            'display_name': 'Username',
-                            'variable_name': 'username',
-                            'value': request.user.username
-                        }
-                    ]
-                }
-            }
-            
-            print(f"DEBUG: Paystack Request - Amount: {amount_in_cents}, Reference: {unique_reference}")
-            print(f"DEBUG: User Email: {user_email}, Username: {request.user.username}")
-            print(f"DEBUG: Payload Email: {payload['email']}")
-            
-            response = requests.post(
-                'https://api.paystack.co/transaction/initialize',
-                headers=headers,
-                json=payload,
-                timeout=30
-            )
-            
-            print(f"DEBUG: Paystack API Response Status: {response.status_code}")
-            print(f"DEBUG: Paystack API Response: {response.text}")
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('status'):
-                    # Update payment record
-                    payment = Payment.objects.get(order=order)
-                    payment.paystack_reference = data['data']['reference']
-                    payment.paystack_access_code = data['data']['access_code']
-                    payment.status = 'pending'
-                    payment.save()
-                    
-                    return JsonResponse({
-                        'status': 'success',
-                        'authorization_url': data['data']['authorization_url'],
-                        'access_code': data['data']['access_code'],
-                        'reference': data['data']['reference']
-                    })
-                else:
-                    return JsonResponse({
-                        'status': 'error',
-                        'message': data.get('message', 'Failed to initialize payment')
-                    })
-            else:
-                return JsonResponse({
-                    'status': 'error',
-                    'message': f'Payment initialization failed. Status: {response.status_code}, Response: {response.text}'
-                })
-                
-        except Exception as e:
-            print(f"DEBUG: Payment Error: {str(e)}")
-            return JsonResponse({
-                'status': 'error',
-                'message': f'Payment error: {str(e)}'
-            })
-
-
-@csrf_exempt
-@require_http_methods(["POST"])
-def paystack_callback(request):
-    """Handle Paystack payment callback"""
-    try:
-        # Verify the webhook signature (optional but recommended)
-        body = request.body
-        data = json.loads(body)
-        
-        reference = data.get('data', {}).get('reference')
-        if not reference:
-            return JsonResponse({'status': 'error', 'message': 'No reference provided'})
-        
-        # Get payment record
-        try:
-            payment = Payment.objects.get(paystack_reference=reference)
-        except Payment.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Payment not found'})
-        
-        # Verify payment with Paystack
-        headers = {
-            'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}',
-            'Content-Type': 'application/json'
+            'paystack_public_key': settings.PAYSTACK_PUBLIC_KEY,
         }
-        
-        verify_response = requests.get(
-            f'https://api.paystack.co/transaction/verify/{reference}',
-            headers=headers,
-            timeout=30
-        )
-        
-        if verify_response.status_code == 200:
-            verify_data = verify_response.json()
+        return render(request, 'payments/paystack_initiate.html', context)
+
+@login_required
+def verify_paystack_payment(request):
+    """
+    Handles the redirect from Paystack after a payment attempt.
+    This is the most important view for security.
+    """
+    reference = request.GET.get('reference')
+    if not reference:
+        messages.error(request, "Payment verification failed: No reference ID provided.")
+        return redirect('payments:payment-failed')
+
+    # Prepare to verify the transaction with Paystack's API
+    url = f'https://api.paystack.co/transaction/verify/{reference}'
+    headers = {
+        'Authorization': f'Bearer {settings.PAYSTACK_SECRET_KEY}'
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        response_data = response.json()
+
+        if response_data.get('status') and response_data.get('data') and response_data['data'].get('status') == 'success':
+            amount_paid_kobo = response_data['data'].get('amount')
+            if amount_paid_kobo is None:
+                messages.error(request, "Payment verification failed: Amount not found in response.")
+                return redirect('payments:payment-failed')
+
+            payment = get_object_or_404(Payment, reference=reference)
+            order = payment.order
             
+<<<<<<< HEAD
             if verify_data.get('status') and verify_data['data']['status'] == 'success':
                 # CRITICAL: Verify amount matches to prevent fraud
                 paid_amount = Decimal(str(verify_data['data']['amount'])) / 100  # Convert from cents
@@ -212,13 +102,15 @@ def paystack_callback(request):
                     }, status=400)
                 
                 # Payment successful and amount verified
+=======
+            # CRITICAL: Verify the amount paid matches the order total
+            if int(amount_paid_kobo) >= int(order.get_total_cost() * 100):
+                order.paid = True
+                order.save()
+>>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
                 payment.status = 'success'
-                payment.result_code = '00'
-                payment.result_desc = 'Payment successful'
-                payment.receipt_number = verify_data['data'].get('reference', '')
-                payment.order.paid = True
-                payment.order.save()
                 payment.save()
+<<<<<<< HEAD
                 
                 # Decrement inventory for each item in the order
                 for item in payment.order.items.all():
@@ -230,22 +122,40 @@ def paystack_callback(request):
                 # Cart clearing happens in the success view instead
                 
                 return JsonResponse({'status': 'success'})
-            else:
-                # Payment failed
-                payment.status = 'failed'
-                payment.result_code = verify_data['data'].get('status', 'failed')
-                payment.result_desc = verify_data['data'].get('gateway_response', 'Payment failed')
-                payment.save()
-                
-                return JsonResponse({'status': 'failed'})
-        else:
-            return JsonResponse({'status': 'error', 'message': 'Verification failed'})
-            
-    except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)})
+=======
 
+                Cart(request).clear()
+                messages.success(request, "Your payment was successful!")
+                return redirect('payments:payment-success')
+>>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd
+            else:
+                # Security check failed: Amount mismatch
+                payment.status = 'failed'
+                payment.save()
+                messages.error(request, f"Payment verification failed: Amount mismatch. We received {amount_paid_kobo/100} but expected {order.get_total_cost()}.")
+                return redirect('payments:payment-failed')
+        else:
+            payment = get_object_or_404(Payment, reference=reference)
+            payment.status = 'failed'
+            payment.save()
+            gateway_message = response_data.get('data', {}).get('gateway_response', 'No details provided.')
+            messages.error(request, f"Your payment was not successful. Reason: {gateway_message}")
+            return redirect('payments:payment-failed')
+            
+    except requests.exceptions.RequestException as e:
+        messages.error(request, f"A network error occurred: {e}. Please contact support.")
+        return redirect('payments:payment-failed')
+    except (KeyError, TypeError) as e:
+        messages.error(request, f"There was an issue processing the payment response: {e}. Please contact support.")
+        return redirect('payments:payment-failed')
+
+# Simple views to show the final status
+@login_required
+def payment_success(request):
+    return render(request, 'payments/payment_success.html')
 
 @login_required
+<<<<<<< HEAD
 def paystack_success(request, order_id):
     """Display payment success page - with verification"""
     order = get_object_or_404(Order, id=order_id, user=request.user)
@@ -334,3 +244,7 @@ def paystack_status(request, order_id):
         'order': order,
         'payment': payment
     })
+=======
+def payment_failed(request):
+    return render(request, 'payments/payment_failed.html')
+>>>>>>> e98667db69d90c224f57b1968017e6c7d554d3cd

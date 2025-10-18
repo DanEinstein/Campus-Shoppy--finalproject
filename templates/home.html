@@ -1,140 +1,229 @@
 {% extends 'base/base.html' %} {% load static %} {% block title %} Home | Campus
 Shoppy {% endblock title %} {% block content %}
 
-<!-- Hero Section with Working Carousel -->
-<section class="hero-section" style="height: 100vh; position: relative; overflow: hidden; background: white;">
-  <div id="heroCarousel" style="position: relative; width: 100%; height: 100%;">
-    
-    <!-- Slide 1 -->
-    <div class="carousel-slide active" style="
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url({% static 'images/happyMasenostudents.jpg' %});
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    ">
-      <div style="
-        background: rgba(0,0,0,0.5);
+<section
+  class="hero-section"
+  style="height: 100vh; position: relative; overflow: hidden; background: white"
+>
+  <div id="heroCarousel" style="position: relative; width: 100%; height: 100%">
+    <div
+      class="carousel-slide active"
+      style="
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 1;
-      "></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+        background-image: url({% static 'images/happyMasenostudents.jpg' %});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: rgba(0, 0, 0, 0.5);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+        "
+      ></div>
+      <div class="container" style="position: relative; z-index: 2">
+        <div
+          class="row justify-content-center align-items-center"
+          style="min-height: 100vh"
+        >
           <div class="col-md-12 text-center text-white">
-            <h1 class="mb-4" style="font-size: 3rem; font-weight: bold; color: white;">Welcome to Campus Shoppy</h1>
-            <h2 class="mb-4" style="font-size: 1.5rem; font-weight: 300;color: white;">
-              We deliver to wherever you are Anytime, Anyplace. Create your account now!
+            <h1
+              class="mb-4"
+              style="font-size: 3rem; font-weight: bold; color: white"
+            >
+              Welcome to Campus Shoppy
+            </h1>
+            <h2
+              class="mb-4"
+              style="font-size: 1.5rem; font-weight: 300; color: white"
+            >
+              We deliver to wherever you are Anytime, Anyplace. Create your
+              account now!
             </h2>
-            <p><a href="/account/signup/" class="btn btn-primary btn-lg px-4 py-3">Get Started</a></p>
+            <p>
+              <a
+                href="/account/signup/"
+                class="btn btn-primary btn-lg px-4 py-3"
+                >Get Started</a
+              >
+            </p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Slide 2 -->
-    <div class="carousel-slide" style="
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url({% static 'images/happy.jpg' %});
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    ">
-      <div style="
-        background: rgba(0,0,0,0.5);
+    <div
+      class="carousel-slide"
+      style="
         position: absolute;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: 1;
-      "></div>
-      <div class="container" style="position: relative; z-index: 2;">
-        <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+        background-image: url({% static 'images/happy.jpg' %});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        display: none;
+        align-items: center;
+        justify-content: center;
+      "
+    >
+      <div
+        style="
+          background: rgba(0, 0, 0, 0.5);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+        "
+      ></div>
+      <div class="container" style="position: relative; z-index: 2">
+        <div
+          class="row justify-content-center align-items-center"
+          style="min-height: 100vh"
+        >
           <div class="col-md-12 text-center text-white">
-            <h1 class="mb-4" style="font-size: 3rem; font-weight: bold;color: white;">100% Quality Goods</h1>
-            <h2 class="mb-4" style="font-size: 1.5rem; font-weight: 300;color: white;">
-              We deliver quality products to wherever you are. Create your account now!
+            <h1
+              class="mb-4"
+              style="font-size: 3rem; font-weight: bold; color: white"
+            >
+              100% Quality Goods
+            </h1>
+            <h2
+              class="mb-4"
+              style="font-size: 1.5rem; font-weight: 300; color: white"
+            >
+              We deliver quality products to wherever you are. Create your
+              account now!
             </h2>
-            <p><a href="/shop/" class="btn btn-primary btn-lg px-4 py-3">Shop Now</a></p>
+            <p>
+              <a href="/shop/" class="btn btn-primary btn-lg px-4 py-3"
+                >Shop Now</a
+              >
+            </p>
           </div>
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- Navigation Arrows -->
-  <div style="position: absolute; top: 50%; left: 20px; transform: translateY(-50%); z-index: 10;">
-    <button onclick="prevSlide()" style="
-     
-      border: none;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      transition: background 0.3s;
-    " onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.6)'">‹</button>
+
+  <div
+    style="
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      z-index: 10;
+    "
+  >
+    <button
+      onclick="prevSlide()"
+      style="
+        border: none;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: background 0.3s;
+      "
+      onmouseover="this.style.background='rgba(0,0,0,0.8)'"
+      onmouseout="this.style.background='rgba(0,0,0,0.6)'"
+    >
+      ‹
+    </button>
   </div>
-  
-  <div style="position: absolute; top: 50%; right: 20px; transform: translateY(-50%); z-index: 10;">
-    <button onclick="nextSlide()" style="
-      background: rgba(0,0,0,0.6);
-      border: none;
-      color: white;
-      padding: 15px 20px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      transition: background 0.3s;
-    " onmouseover="this.style.background='rgba(0,0,0,0.8)'" onmouseout="this.style.background='rgba(0,0,0,0.6)'">›</button>
+
+  <div
+    style="
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      z-index: 10;
+    "
+  >
+    <button
+      onclick="nextSlide()"
+      style="
+        background: rgba(0, 0, 0, 0.6);
+        border: none;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 20px;
+        transition: background 0.3s;
+      "
+      onmouseover="this.style.background='rgba(0,0,0,0.8)'"
+      onmouseout="this.style.background='rgba(0,0,0,0.6)'"
+    >
+      ›
+    </button>
   </div>
-  
-  <!-- Dots Navigation -->
-  <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; display: flex; gap: 15px;">
-    <span onclick="goToSlide(0)" class="carousel-dot active" style="
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: white;
-      cursor: pointer;
-      transition: all 0.3s;
-    "></span>
-    <span onclick="goToSlide(1)" class="carousel-dot" style="
-      width: 15px;
-      height: 15px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.5);
-      cursor: pointer;
-      transition: all 0.3s;
-    "></span>
+
+  <div
+    style="
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 15px;
+    "
+  >
+    <span
+      onclick="goToSlide(0)"
+      class="carousel-dot active"
+      style="
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+        transition: all 0.3s;
+      "
+    ></span>
+    <span
+      onclick="goToSlide(1)"
+      class="carousel-dot"
+      style="
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        cursor: pointer;
+        transition: all 0.3s;
+      "
+    ></span>
   </div>
 </section>
 
-<!-- Services Section -->
 <section class="ftco-section py-5">
   <div class="container">
     <div class="row no-gutters ftco-services">
       <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
         <div class="media block-6 services mb-md-0 mb-4">
-          <div class="icon bg-color-1 active d-flex justify-content-center align-items-center mb-2">
+          <div
+            class="icon bg-color-1 active d-flex justify-content-center align-items-center mb-2"
+          >
             <span class="flaticon-shipped"></span>
           </div>
           <div class="media-body">
@@ -145,7 +234,9 @@ Shoppy {% endblock title %} {% block content %}
       </div>
       <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
         <div class="media block-6 services mb-md-0 mb-4">
-          <div class="icon bg-color-2 d-flex justify-content-center align-items-center mb-2">
+          <div
+            class="icon bg-color-2 d-flex justify-content-center align-items-center mb-2"
+          >
             <span class="flaticon-diet"></span>
           </div>
           <div class="media-body">
@@ -156,7 +247,9 @@ Shoppy {% endblock title %} {% block content %}
       </div>
       <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
         <div class="media block-6 services mb-md-0 mb-4">
-          <div class="icon bg-color-3 d-flex justify-content-center align-items-center mb-2">
+          <div
+            class="icon bg-color-3 d-flex justify-content-center align-items-center mb-2"
+          >
             <span class="flaticon-award"></span>
           </div>
           <div class="media-body">
@@ -167,7 +260,9 @@ Shoppy {% endblock title %} {% block content %}
       </div>
       <div class="col-md-3 text-center d-flex align-self-stretch ftco-animate">
         <div class="media block-6 services mb-md-0 mb-4">
-          <div class="icon bg-color-4 d-flex justify-content-center align-items-center mb-2">
+          <div
+            class="icon bg-color-4 d-flex justify-content-center align-items-center mb-2"
+          >
             <span class="flaticon-customer-service"></span>
           </div>
           <div class="media-body">
@@ -180,14 +275,18 @@ Shoppy {% endblock title %} {% block content %}
   </div>
 </section>
 
-<!-- Category Section -->
 <section class="ftco-section ftco-category ftco-no-pt">
   <div class="container">
     <div class="row">
       <div class="col-md-8">
         <div class="row">
           <div class="col-md-6 order-md-last align-items-stretch d-flex">
-            <div class="category-wrap-2 ftco-animate img align-self-stretch d-flex" style="background-image: url({% static 'images/Africanvendor.jpg' %});">
+            <div
+              class="category-wrap-2 ftco-animate img align-self-stretch d-flex"
+              style="
+                background-image: url({% static 'images/Africanvendor.jpg' %});
+              "
+            >
               <div class="text text-center">
                 <h2>Shop Everything</h2>
                 <p>Get the best from the best</p>
@@ -196,12 +295,21 @@ Shoppy {% endblock title %} {% block content %}
             </div>
           </div>
           <div class="col-md-6">
-            <div class="category-wrap ftco-animate img mb-4 d-flex align-items-end" style="background-image: url({% static 'images/shoe rack.webp' %})">
+            <div
+              class="category-wrap ftco-animate img mb-4 d-flex align-items-end"
+              style="background-image: url({% static 'images/shoe_rack.webp' %})" /* CORRECTED */
+            >
               <div class="text px-3 py-1">
                 <h2 class="mb-0"><a href="/shop/">Household Items</a></h2>
               </div>
             </div>
-            <div class="category-wrap ftco-animate img d-flex align-items-end" style="background-image: url({% static 'images/Sayona woofers image.webp' %});">
+            <div
+              class="category-wrap ftco-animate img d-flex align-items-end"
+              style="
+                /* CORRECTED: Added space and fixed filename with underscore */
+                background-image: url({% static 'images/Sayona_woofers_image.webp' %}); 
+              "
+            >
               <div class="text px-3 py-1">
                 <h2 class="mb-0"><a href="/shop/">Sound Systems</a></h2>
               </div>
@@ -211,12 +319,18 @@ Shoppy {% endblock title %} {% block content %}
       </div>
 
       <div class="col-md-4">
-        <div class="category-wrap ftco-animate img mb-4 d-flex align-items-end" style="background-image: url({% static 'images/samsung phone.jpg' %})">
+        <div
+          class="category-wrap ftco-animate img mb-4 d-flex align-items-end"
+          style="background-image: url({% static 'images/samsung_phone.jpg' %})" /* CORRECTED */
+        >
           <div class="text px-3 py-1">
             <h2 class="mb-0"><a href="/shop/">Phones</a></h2>
           </div>
         </div>
-        <div class="category-wrap ftco-animate img d-flex align-items-end" style="background-image: url({% static 'images/kenyan watch.jpg' %})">
+        <div
+          class="category-wrap ftco-animate img d-flex align-items-end"
+          style="background-image: url({% static 'images/kenyan_watch.jpg' %})" /* CORRECTED */
+        >
           <div class="text px-3 py-1">
             <h2 class="mb-0"><a href="/shop/">Watches</a></h2>
           </div>
@@ -226,7 +340,6 @@ Shoppy {% endblock title %} {% block content %}
   </div>
 </section>
 
-<!-- Products Section -->
 <section class="ftco-section">
   <div class="container">
     <div class="row justify-content-center mb-3 pb-3">
@@ -242,13 +355,23 @@ Shoppy {% endblock title %} {% block content %}
       {% if products %} {% for product in products %}
       <div class="col-md-6 col-lg-3 ftco-animate">
         <div class="product">
-          <a href="{% url 'shop:product-details' product.id %}" class="img-prod">
-            <img class="img-fluid" src="{{ product.photo.url }}" alt="{{ product.name }}" />
+          <a
+            href="{% url 'shop:product-details' product.id %}"
+            class="img-prod"
+          >
+            <img
+              class="img-fluid"
+              src="{% if product.photo %}{{ product.photo.url }}{% else %}{% static 'images/product-1.jpg' %}{% endif %}"
+              onerror="this.src='{% static 'images/product-1.jpg' %}'"
+              alt="{{ product.name }}"
+            />
             <div class="overlay"></div>
           </a>
           <div class="text py-3 pb-4 px-3 text-center">
             <h3>
-              <a href="{% url 'shop:product-details' product.id %}">{{ product.name }}</a>
+              <a href="{% url 'shop:product-details' product.id %}"
+                >{{ product.name }}</a
+              >
             </h3>
             <div class="d-flex">
               <div class="pricing">
@@ -259,18 +382,31 @@ Shoppy {% endblock title %} {% block content %}
             </div>
             <div class="bottom-area d-flex px-3">
               <div class="m-auto d-flex">
-                <a href="{% url 'shop:product-details' product.id %}" class="add-to-cart d-flex justify-content-center align-items-center text-center">
+                <a
+                  href="{% url 'shop:product-details' product.id %}"
+                  class="add-to-cart d-flex justify-content-center align-items-center text-center"
+                >
                   <span><i class="ion-ios-menu"></i></span>
                 </a>
-                <form action="{% url 'cart:add_to_cart' product.id %}" method="post" class="d-inline">
-                    {% csrf_token %}
-                    <input type="hidden" name="quantity" value="1">
-                    <input type="hidden" name="update" value="False">
-                    <button type="submit" class="buy-now d-flex justify-content-center align-items-center mx-1">
-                      <span><i class="ion-ios-cart"></i></span>
-                    </button>
+                <form
+                  action="{% url 'cart:add_to_cart' product.id %}"
+                  method="post"
+                  class="d-inline"
+                >
+                  {% csrf_token %}
+                  <input type="hidden" name="quantity" value="1" />
+                  <input type="hidden" name="update" value="False" />
+                  <button
+                    type="submit"
+                    class="buy-now d-flex justify-content-center align-items-center mx-1"
+                  >
+                    <span><i class="ion-ios-cart"></i></span>
+                  </button>
                 </form>
-                <a href="{% url 'shop:add_to_wishlist' product.id %}" class="heart d-flex justify-content-center align-items-center">
+                <a
+                  href="{% url 'shop:add_to_wishlist' product.id %}"
+                  class="heart d-flex justify-content-center align-items-center"
+                >
                   <span><i class="ion-ios-heart"></i></span>
                 </a>
               </div>
@@ -281,14 +417,17 @@ Shoppy {% endblock title %} {% block content %}
       {% endfor %} {% else %}
       <div class="col-12 text-center">
         <h2 style="margin: auto">Sorry! There are no Products Available!</h2>
-        <p><a href="/admin/shop/product/add/" class="btn btn-primary">Add Products</a></p>
+        <p>
+          <a href="/admin/shop/product/add/" class="btn btn-primary"
+            >Add Products</a
+          >
+        </p>
       </div>
       {% endif %}
     </div>
   </div>
 </section>
 
-<!-- Testimonials Section -->
 <section class="ftco-section testimony-section">
   <div class="container">
     <div class="row justify-content-center mb-5 pb-3">
@@ -303,14 +442,20 @@ Shoppy {% endblock title %} {% block content %}
         <div class="carousel-testimony owl-carousel">
           <div class="item">
             <div class="testimony-wrap p-4 pb-5">
-              <div class="user-img mb-5" style="background-image: url({% static 'images/person1.jpg' %})">
-                <span class="quote d-flex align-items-center justify-content-center">
+              <div
+                class="user-img mb-5"
+                style="background-image: url({% static 'images/person1.jpg' %})" /* CORRECTED */
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
                   <i class="icon-quote-left"></i>
                 </span>
               </div>
               <div class="text text-center">
                 <p class="mb-5 pl-4 line">
-                  Campus Shoppy has changed completely the way that we carry out our online shopping here in Maseno University
+                  Campus Shoppy has changed completely the way that we carry out
+                  our online shopping here in Maseno University
                 </p>
                 <p class="name">Joshua Mwangari</p>
                 <span class="position">Shop Owner</span>
@@ -319,14 +464,20 @@ Shoppy {% endblock title %} {% block content %}
           </div>
           <div class="item">
             <div class="testimony-wrap p-4 pb-5">
-              <div class="user-img mb-5" style="background-image: url({% static 'images/person2.jpg' %})">
-                <span class="quote d-flex align-items-center justify-content-center">
+              <div
+                class="user-img mb-5"
+                style="background-image: url({% static 'images/person2.jpg' %})" /* CORRECTED */
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
                   <i class="icon-quote-left"></i>
                 </span>
               </div>
               <div class="text text-center">
                 <p class="mb-5 pl-4 line">
-                  I nowadays don't struggle or think of how i am going to make orders online. Campus Shoppy imenisort!
+                  I nowadays don't struggle or think of how i am going to make
+                  orders online. Campus Shoppy imenisort!
                 </p>
                 <p class="name">Brenda Atieno</p>
                 <span class="position">Customer</span>
@@ -335,14 +486,21 @@ Shoppy {% endblock title %} {% block content %}
           </div>
           <div class="item">
             <div class="testimony-wrap p-4 pb-5">
-              <div class="user-img mb-5" style="background-image: url({% static 'images/person1.jpg' %})">
-                <span class="quote d-flex align-items-center justify-content-center">
+              <div
+                class="user-img mb-5"
+                style="background-image: url({% static 'images/person1.jpg' %})" /* CORRECTED */
+              >
+                <span
+                  class="quote d-flex align-items-center justify-content-center"
+                >
                   <i class="icon-quote-left"></i>
                 </span>
               </div>
               <div class="text text-center">
                 <p class="mb-5 pl-4 line">
-                  Before Campus Shoppy we had a hard time because we had to order all of the items from Kisumu and wait until they are delivered by a Matatu
+                  Before Campus Shoppy we had a hard time because we had to
+                  order all of the items from Kisumu and wait until they are
+                  delivered by a Matatu
                 </p>
                 <p class="name">Morris Ojwang</p>
                 <span class="position">Maseno Business Owner</span>
@@ -355,13 +513,16 @@ Shoppy {% endblock title %} {% block content %}
   </div>
 </section>
 
-<!-- Newsletter Section -->
 <section class="ftco-section ftco-no-pt ftco-no-pb py-5 bg-light">
   <div class="container py-4">
     <div class="row d-flex justify-content-center py-5">
       <div class="col-md-6">
-        <h2 style="font-size: 22px" class="mb-0">Subscribe to our Newsletter</h2>
-        <span>Get e-mail updates about our latest shops and special offers</span>
+        <h2 style="font-size: 22px" class="mb-0">
+          Subscribe to our Newsletter
+        </h2>
+        <span
+          >Get e-mail updates about our latest shops and special offers</span
+        >
       </div>
       <div class="col-md-6 d-flex align-items-center">
         <form class="subscribe-form" method="POST">
@@ -375,118 +536,125 @@ Shoppy {% endblock title %} {% block content %}
   </div>
 </section>
 
-<!-- Carousel JavaScript -->
 <script>
-let currentSlideIndex = 0;
-let slideInterval;
+  let currentSlideIndex = 0;
+  let slideInterval;
 
-// Initialize carousel
-document.addEventListener('DOMContentLoaded', function() {
-  console.log('Carousel initializing...');
-  
-  const slides = document.querySelectorAll('.carousel-slide');
-  const dots = document.querySelectorAll('.carousel-dot');
-  
-  if (slides.length === 0) {
-    console.log('No slides found');
-    return;
-  }
-  
-  // Show first slide
-  showSlide(0);
-  
-  // Auto-advance slides every 5 seconds
-  slideInterval = setInterval(() => {
-    nextSlide();
-  }, 5000);
-  
-  // Add touch support
-  addTouchSupport();
-  
-  console.log('Carousel initialized successfully');
-});
+  // Initialize carousel
+  document.addEventListener("DOMContentLoaded", function () {
+    console.log("Carousel initializing...");
 
-// Show specific slide
-function showSlide(index) {
-  const slides = document.querySelectorAll('.carousel-slide');
-  const dots = document.querySelectorAll('.carousel-dot');
-  
-  if (slides.length === 0) return;
-  
-  // Hide all slides
-  slides.forEach((slide, i) => {
-    if (i === index) {
-      slide.style.display = 'flex';
-      slide.classList.add('active');
-    } else {
-      slide.style.display = 'none';
-      slide.classList.remove('active');
+    const slides = document.querySelectorAll(".carousel-slide");
+    const dots = document.querySelectorAll(".carousel-dot");
+
+    if (slides.length === 0) {
+      console.log("No slides found");
+      return;
     }
-  });
-  
-  // Update dots
-  dots.forEach((dot, i) => {
-    if (i === index) {
-      dot.style.background = 'white';
-      dot.classList.add('active');
-    } else {
-      dot.style.background = 'rgba(255,255,255,0.5)';
-      dot.classList.remove('active');
-    }
-  });
-  
-  currentSlideIndex = index;
-}
 
-// Next slide
-function nextSlide() {
-  const slides = document.querySelectorAll('.carousel-slide');
-  const nextIndex = (currentSlideIndex + 1) % slides.length;
-  showSlide(nextIndex);
-}
+    // Show first slide
+    showSlide(0);
 
-// Previous slide
-function prevSlide() {
-  const slides = document.querySelectorAll('.carousel-slide');
-  const prevIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
-  showSlide(prevIndex);
-}
-
-// Go to specific slide
-function goToSlide(index) {
-  showSlide(index);
-}
-
-// Touch/swipe support
-let startX = 0;
-let endX = 0;
-
-function addTouchSupport() {
-  const carousel = document.getElementById('heroCarousel');
-  if (!carousel) return;
-  
-  carousel.addEventListener('touchstart', function(e) {
-    startX = e.touches[0].clientX;
-  }, { passive: true });
-  
-  carousel.addEventListener('touchend', function(e) {
-    endX = e.changedTouches[0].clientX;
-    handleSwipe();
-  }, { passive: true });
-}
-
-function handleSwipe() {
-  const swipeThreshold = 50;
-  const diff = startX - endX;
-  
-  if (Math.abs(diff) > swipeThreshold) {
-    if (diff > 0) {
+    // Auto-advance slides every 5 seconds
+    slideInterval = setInterval(() => {
       nextSlide();
-    } else {
-      prevSlide();
+    }, 5000);
+
+    // Add touch support
+    addTouchSupport();
+
+    console.log("Carousel initialized successfully");
+  });
+
+  // Show specific slide
+  function showSlide(index) {
+    const slides = document.querySelectorAll(".carousel-slide");
+    const dots = document.querySelectorAll(".carousel-dot");
+
+    if (slides.length === 0) return;
+
+    // Hide all slides
+    slides.forEach((slide, i) => {
+      if (i === index) {
+        slide.style.display = "flex";
+        slide.classList.add("active");
+      } else {
+        slide.style.display = "none";
+        slide.classList.remove("active");
+      }
+    });
+
+    // Update dots
+    dots.forEach((dot, i) => {
+      if (i === index) {
+        dot.style.background = "white";
+        dot.classList.add("active");
+      } else {
+        dot.style.background = "rgba(255,255,255,0.5)";
+        dot.classList.remove("active");
+      }
+    });
+
+    currentSlideIndex = index;
+  }
+
+  // Next slide
+  function nextSlide() {
+    const slides = document.querySelectorAll(".carousel-slide");
+    const nextIndex = (currentSlideIndex + 1) % slides.length;
+    showSlide(nextIndex);
+  }
+
+  // Previous slide
+  function prevSlide() {
+    const slides = document.querySelectorAll(".carousel-slide");
+    const prevIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+    showSlide(prevIndex);
+  }
+
+  // Go to specific slide
+  function goToSlide(index) {
+    showSlide(index);
+  }
+
+  // Touch/swipe support
+  let startX = 0;
+  let endX = 0;
+
+  function addTouchSupport() {
+    const carousel = document.getElementById("heroCarousel");
+    if (!carousel) return;
+
+    carousel.addEventListener(
+      "touchstart",
+      function (e) {
+        startX = e.touches[0].clientX;
+      },
+      { passive: true }
+    );
+
+    carousel.addEventListener(
+      "touchend",
+      function (e) {
+        endX = e.changedTouches[0].clientX;
+        handleSwipe();
+      },
+      { passive: true }
+    );
+  }
+
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = startX - endX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
     }
   }
-}
 </script>
 
 {% endblock content %}

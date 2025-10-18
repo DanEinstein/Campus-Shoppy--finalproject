@@ -12,5 +12,5 @@ set DJANGO_SETTINGS_MODULE=django_ecommerce.settings
 set PYTHONUNBUFFERED=1
 
 REM Start server with improved settings
-python manage.py runserver 127.0.0.1:8000 --noreload --insecure
+venv\Scripts\python manage.py runserver 127.0.0.1:8000
 pause

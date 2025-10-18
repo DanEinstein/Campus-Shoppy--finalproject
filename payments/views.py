@@ -8,6 +8,7 @@ from django.http import HttpResponse, JsonResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 
 from cart.models import Order
 from cart.cart import Cart
@@ -204,7 +205,7 @@ def verify_payment(request, order_id):
             # Try M-Pesa query API first
             try:
                 token = _mpesa_token()
-                print(f"M-Pesa Token: {token[:20]}...")  # Debug: show first 20 chars
+                logging.info(f"M-Pesa Token: {token[:20]}...")  # Debug: show first 20 chars
                 
                 query_url = f"{settings.MPESA_BASE_URL}/mpesa/stkpushquery/v1/query"
                 password, timestamp = _mpesa_password()
@@ -216,8 +217,8 @@ def verify_payment(request, order_id):
                     "CheckoutRequestID": payment.checkout_request_id
                 }
                 
-                print(f"Query URL: {query_url}")
-                print(f"Payload: {payload}")
+                logging.info(f"Query URL: {query_url}")
+                logging.info(f"Payload: {payload}")
                 
                 headers = {
                     "Authorization": f"Bearer {token}",
@@ -227,8 +228,8 @@ def verify_payment(request, order_id):
                 response = requests.post(query_url, headers=headers, json=payload, timeout=30)
                 
                 # Debug logging
-                print(f"M-Pesa Query Response Status: {response.status_code}")
-                print(f"M-Pesa Query Response: {response.text}")
+                logging.info(f"M-Pesa Query Response Status: {response.status_code}")
+                logging.info(f"M-Pesa Query Response: {response.text}")
                 
                 if response.status_code == 200:
                     data = response.json()
@@ -309,6 +310,7 @@ def verify_payment(request, order_id):
 
 
 @login_required
+@staff_member_required
 def confirm_payment(request, order_id):
     """Manually confirm payment when M-Pesa query is not available"""
     order = get_object_or_404(Order, id=order_id, user=request.user)

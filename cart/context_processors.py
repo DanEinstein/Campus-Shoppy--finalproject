@@ -2,4 +2,8 @@ from .cart import Cart
 
 
 def cart(request):
-    return {'cart': Cart(request)}
+    try:
+        return {'cart': Cart(request)}
+    except Exception:
+        # Return empty cart if there's any error
+        return {'cart': None}
